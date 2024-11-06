@@ -1,5 +1,7 @@
 from ..data import load_characters
 from ..data import load_movies
+from collections import Counter
+import ast
 
 def get_actor_name(actor_id):
     """Gets actor name.
@@ -116,6 +118,40 @@ def actor_movie_count(actor_id):
     return get_actor_movies(actor_id).shape[0]
 
 
+def actor_genre_counts(actor_id):
+    """Counts the number of times an actor played in each genre.
+    
+    Parameters
+    ----------
+    actor_id : str
+        Freebase actor ID
+
+    Returns
+    -------
+    Counter
+        dict like object where keys are genres and values are counts
+    """
+    return get_actor_movies(actor_id)["Genres"].apply(lambda genres: Counter(list(ast.literal_eval(genres).values()))).sum()
+
+
+def actor_prefered_genres(actor_id, n):
+    """Gets the most common genres for an actor.
+    
+    Parameters
+    ----------
+    actor_id : str
+        Freebase actor ID
+    n: int
+        Top n values to return
+
+    Returns
+    -------
+    list
+        list of name-count pairs 
+    """
+    return actor_genre_counts(actor_id).most_common(n)
+
+
 def print_actor_stats(actor_id):
     """Prints some statistics about this actor.
     
@@ -124,7 +160,9 @@ def print_actor_stats(actor_id):
     actor_id : str
         Freebase actor ID
     """
+    fav_genre, fav_genre_count = actor_prefered_genres(actor_id, 1)[0]
     print(f"Name: {get_actor_name(actor_id)}")
     print(f"  * Played in {actor_movie_count(actor_id)} movies.")
+    print(f"  * Favourite genre: {fav_genre} ({fav_genre_count} movies).")
     print(f"  * Total movie revenues: {actor_total_revenue(actor_id):16,.0f}$.")
     print(f"  * Average movie revenue: {actor_mean_revenue(actor_id):15,.0f}$.")
