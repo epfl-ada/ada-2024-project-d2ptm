@@ -1,7 +1,17 @@
 # EPFL ADA 2024, Project-2, Team d2ptm
 
-<p>
-<center style="font-size:24px"><b>Topic:</b> The impact of actors' collaborations on their career</center>
+<p align="center"><big>
+<b>Topic:</b> The impact of actors' collaborations on their career
+</big>
+</p>
+
+<p align="center">
+  <a href="#abstract">Abstract</a> •
+  <a href="#research-questions">Research Questions</a> •
+  <a href="#methodology">Methodology</a> •
+  <a href="#proposed-timeline">Proposed Timeline</a> •
+  <a href="#team-organization">Team Organization</a> •
+  <a href="#references">References</a>
 </p>
 
 ## Abstract
