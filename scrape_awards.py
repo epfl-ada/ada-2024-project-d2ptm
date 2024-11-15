@@ -10,6 +10,9 @@ import pickle
 
 
 def awards_str_query(freebaseids_query):
+    """
+    Creates query to scrape awards
+    """
     query = f"""
     SELECT ?s ?sLabel ?freebaseID ?awardLabel ?awardDate
     WHERE {{
@@ -35,6 +38,9 @@ def awards_str_query(freebaseids_query):
 
 
 def nominations_str_query(freebaseids_query):
+    """
+    Creates query to scrape nominations
+    """
     query = f"""
     SELECT ?s ?sLabel ?freebaseID ?nominationLabel ?nominationDate
     WHERE {{
@@ -60,6 +66,9 @@ def nominations_str_query(freebaseids_query):
 
 
 def make_query(query):
+    """
+    Send query to DB
+    """
     try:
         sparql = SPARQLWrapper("https://query.wikidata.org/sparql")
         sparql.setQuery(query)
@@ -75,6 +84,9 @@ def make_query(query):
 
 
 def query_awards(freebaseids, query_f, label_name, query_dict):
+    """
+    Full pipeline for scraping and processing.
+    """
     #if verbose:
     #    print(f'Couldn\'t find in cache, querying for {freebaseid}')
     time.sleep(0)
