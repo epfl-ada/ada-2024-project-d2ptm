@@ -44,7 +44,7 @@ While answering these questions provides a comprehensive analysis for the USA mo
 - Do the clusters have a significant distribution difference between these two countries (e.g., tend to be much smaller/bigger in size)
 - What are the differences between top-one (revenue-wise) cluster for these countries in terms of distributions (age, genres, etc.).
 
-## Methodology
+## Methods
 
 ### Datasets and pre-processing
 
@@ -62,23 +62,24 @@ During data pre-processing, we found that only about 20% of U.S. movies in the d
 This lack of data can lead to biased insights, as the missing revenue values may disproportionately affect lower-budget or independent films.
 As a result, our analysis might favor higher-budget films, giving an incomplete and potentially skewed view of the U.S. movie industry.
 
-### Methodology
+### Clustering Methodology
 
 TODO
 
-## Proposed timeline
-
-TODO, mb merge with team organization.
-
 ## Team organization
 
-The full list of authors and the assigned tasks for the Project-3 are presented below:
+Each member will focus on answering one of the above research questions:
 
-- Petr Grinberg
-- Daniil Pyatko
-- Paul Guillon
-- Maksim Vasiliev
-- Tymur Tytarenko
+- Research question 1: Petr Grinberg
+- Research question 2: Paul Guillon
+- Research question 3: Maksim Vasiliev
+- Research question 4: Daniil Pyatko
+- Research question 5: Tymur Tytarenko
+
+## Proposed timeline
+- 15/11 - 29/11: Homework 2
+- 30/11 - 13/12: Answer research questions individually
+- 14/12 - 20/12: Create datastory/website together
 
 ## References
 
