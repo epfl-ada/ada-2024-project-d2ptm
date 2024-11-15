@@ -1,7 +1,7 @@
 # EPFL ADA 2024, Project-2, Team d2ptm
 
 <p align="center"><big>
-<b>Topic:</b> The impact of actors' collaborations on their career
+<b>Topic:</b> The impact of actors' friendships on their career
 </big>
 </p>
 
@@ -16,11 +16,17 @@
 
 ## Abstract
 
-In the modern era of publicly available high-quality education and a consequent large number of professionals, getting a position in a top-tier company becomes more and more complicated. One way to improve your job search is to enrich your community and find "friends" in the companies that could refer you for a position. However, we wonder if this problem exists in the movie actors' profession, for which, the top-tier education might not be such an important factor to get an offer. We want to investigate whether the actor’s community defines his or her future and success in the profession. To do this, we define the graph of actors' collaborations: vertices are actors and an edge depends on the existence of a mutual movie for the corresponding actors. Then, we split the vertices into clusters, a.k.a. communities, and analyze them to answer different questions regarding the impact of the collaborations on actors’ success. While the main experiments are conducted on Hollywood subset of movies, we also compare clusters from different countries to see whether the conclusions still hold.
+In today’s competitive job market, leveraging professional networks is crucial for securing top-tier positions. 
+But does the same apply to movie actors, where education might not play a significant role? 
+To explore this, we examine whether an actor’s professional community shapes their success. 
+We build a graph where vertices represent actors, and edges connect those who have appeared in a movie together **symbolizing friendship between them**. 
+By clustering actors into communities, we investigate the role of friendships in shaping career trajectories. 
+Our analysis focuses on U.S. movies but extends to films from other countries to determine if the conclusions are universal. 
+This study aims to reveal whether an actor’s community significantly impacts their career outcomes and how friendship patterns vary across time and countries.
 
 ## Research Questions
 
-The topic of our research is: **does actor's collaborations have and impact on his or her career?**
+The topic of our research is: **does actor's friendships have and impact on his or her career?**
 
 We will focus on the movies created in the USA.
 
@@ -39,10 +45,16 @@ To answer this question, we investigate the following sub-questions:
    - From which to which year has the cluster existed? Are clusters “compact” in time?
    - Do the characteristics of the leading actor group evolve over time?
 
-While answering these questions provides a comprehensive analysis for the USA movies, we want to understand how likely the same conclusions will hold for other countries. Therefore, we will compare the clusters from the USA with the clusters from another country, e.g. India:
+While answering these questions provides a comprehensive analysis for the USA movies, we want to understand how likely the same conclusions will hold for other countries.
+Therefore, we will compare the clusters from the USA with the clusters from another country, e.g. India:
 
-- Do the clusters have a significant distribution difference between these two countries (e.g., tend to be much smaller/bigger in size)
-- What are the differences between top-one (revenue-wise) cluster for these countries in terms of distributions (age, genres, etc.).
+6. **Countries wise comparison**
+   - Do the clusters have a significant distribution difference between these two countries (e.g., tend to be much smaller/bigger in size)?
+   - What are the differences between top-one (revenue-wise) cluster for these countries in terms of distributions (age, genres, etc.)?
+
+
+
+
 
 ## Methods
 
@@ -50,17 +62,15 @@ While answering these questions provides a comprehensive analysis for the USA mo
 
 Our primary dataset is the CMU Movie Summary Corpus [[1]](#cmu_dataset). It contains 42306 movies with their Wikipedia-based plot summaries and Freebase-based metadata, including revenue, genre, release data, runtime, language, country of origin, and information about movie characters and corresponding actors (date of birth, age, height, ethnicity, and gender).
 
+During data pre-processing, we discovered that only about 20% of U.S. movies in the dataset have revenue details. 
+We keep only movies that are in English because they represent the majority of U.S. movies and other languages could be considered as outliers for our analysis.
+
 To answer the awards-related questions, we supplement this dataset with the information from Wikidata obtained via our [SPARQL scrapping algorithm](scrape_awards.py) and actors' FreebaseID from the CMU movie dataset.
 
-We cleaned the data by doing TODO, as described in the [notebook](results.ipynb).
+We cleaned the data by removing NaNs and fixing date format as described in the [notebook](results.ipynb).
 
-For the main analysis, we will focus on the USA subset of this datasets, resulting in TODO_ADD_NUMBER movies and TODO actors after cleaning the data.
+For the main analysis, we will focus on the USA subset of this dataset, resulting in 6694 movies and 30379 actors after cleaning the data.
 
-### Possible limitations
-
-During data pre-processing, we found that only about 20% of U.S. movies in the dataset include revenue details.
-This lack of data can lead to biased insights, as the missing revenue values may disproportionately affect lower-budget or independent films.
-As a result, our analysis might favor higher-budget films, giving an incomplete and potentially skewed view of the U.S. movie industry.
 
 ### Clustering Methodology
 
@@ -72,7 +82,7 @@ Each member will focus on answering one of the above research questions:
 
 - Research question 1: Petr Grinberg
 - Research question 2: Paul Guillon
-- Research question 3: Maksim Vasiliev
+- Research question 3, 6: Maksim Vasiliev
 - Research question 4: Daniil Pyatko
 - Research question 5: Tymur Tytarenko
 
@@ -84,5 +94,5 @@ Each member will focus on answering one of the above research questions:
 ## References
 
 1. <a id="cmu_dataset"></a> Bamman, D., O’Connor, B., & Smith, N. A. (2013, August). Learning latent personas of film characters. In Proceedings of the 51st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) (pp. 352-361).
+2. <a id="louvain_algorithm"></a> Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008). Fast unfolding of communities in large networks. Journal of statistical mechanics: theory and experiment, 2008(10), P10008.
 
-TODO_ADD_DATASETS_AND_ALGORITHMS_PAPERS
