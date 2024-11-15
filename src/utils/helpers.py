@@ -119,4 +119,6 @@ def plot_top_genres(df, table_name, limit=None):
 
 
 def merge_movies_and_actors(movies, characters):
-    return pd.merge(movies, characters, on="WikipediaId", how="inner")
+    res = pd.merge(movies, characters, on="WikipediaId", how="inner", suffixes=('', '_duplicate'))
+    res = res[list(set(movies.columns.tolist() + characters.columns.tolist()))]
+    return res.copy()
