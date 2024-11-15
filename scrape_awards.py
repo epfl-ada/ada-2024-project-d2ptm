@@ -1,8 +1,8 @@
 import pandas as pd
-from SPARQLWrapper import SPARQLWrapper, JSON
+from SPARQLWrapper import SPARQLWrapper, SPARQLExceptions, JSON
 from tqdm import tqdm
 from collections import defaultdict
-from src.data import load_characters
+from src.data import load_characters, load_movies
 import time
 import pickle
 
@@ -59,20 +59,37 @@ def nominations_str_query(freebaseids_query):
     return query
 
 
+def make_query(query):
+    try:
+        sparql = SPARQLWrapper("https://query.wikidata.org/sparql")
+        sparql.setQuery(query)
+        sparql.setReturnFormat(JSON)
+        results = sparql.query().convert()
+        return True, results
+    except SPARQLExceptions.SPARQLWrapperException:
+        print('stopped because timeout!')
+        time.sleep(2 * 60)
+        return False, None
+    
+    
+
+
 def query_awards(freebaseids, query_f, label_name, query_dict):
     #if verbose:
     #    print(f'Couldn\'t find in cache, querying for {freebaseid}')
-    time.sleep(2)
-    sparql = SPARQLWrapper("https://query.wikidata.org/sparql")
+    time.sleep(0)
+    
     freebaseids_query = " ".join(f'"{id}"' for id in freebaseids)
     freebase_id_set = set(freebaseids)
     removing_set = set()
     
     query = query_f(freebaseids_query)
 
-    sparql.setQuery(query)
-    sparql.setReturnFormat(JSON)
-    results = sparql.query().convert()
+    stopped = False
+    results = None
+    while not stopped:
+        stopped, results = make_query(query)
+    
     for ans_dict in results['results']['bindings']:
         name = ans_dict['freebaseID']['value']
         awards = ans_dict[label_name]['value']
@@ -84,48 +101,48 @@ def query_awards(freebaseids, query_f, label_name, query_dict):
     for name in freebase_id_set - removing_set:
         query_dict[name] = []
 
-name = 'characters'
+if __name__ == "__main__":
 
-if name == 'movies':
+    name = 'movies'
 
-    columns = ['WikiId', 'FreeBaseId', 'MovieName', 
-            'MovieRelease', 'Revenue', 'Runtime', 'Languages', 'Countries', 'Genres']
+    if name == 'movies':
 
-    movies = pd.read_csv('data/cmu/MovieSummaries/movie.metadata.tsv', sep='\t', names=columns)
-    ids = movies.FreeBaseId
-elif name == 'characters':
-    characters = load_characters()
-    ids = characters.FreebaseActorId.unique()
+    
+        movies = load_movies()
+        ids = movies.FreebaseId.unique()
+    elif name == 'actors':
+        characters = load_characters()
+        ids = characters.FreebaseActorId.unique()
 
-cache = defaultdict(list)
-
-
-k = 200
-w = (len(ids) + k-1)//k
-for i in tqdm(range(w)): 
-    if i % 50 == 0 and i != 0:
-        time.sleep(60)
-    if i % 200 == 0 and i != 0:
-        time.sleep(9 * 60)
-    cur_ids = ids[i*k:(i+1)*k]
-    query_awards(cur_ids, nominations_str_query, 'nominationLabel', cache)
-    i+=1
+    cache = defaultdict(list)
 
 
+    k = 200
+    w = (len(ids) + k-1)//k
+    for i in tqdm(range(w)): 
+        #if i % 50 == 0 and i != 0:
+        #    time.sleep(30)
+        #if i % 200 == 0 and i != 0:
+        #    time.sleep(9 * 60)
+        cur_ids = ids[i*k:(i+1)*k]
+        query_awards(cur_ids, nominations_str_query, 'nominationLabel', cache)
+        i+=1
 
 
-with open(f'nominations_{name}.pkl', 'wb') as f:
-    pickle.dump(cache, f)
 
-to_pandas_dict = defaultdict(dict)
 
-for i, (key, val) in enumerate(cache.items()):
-    merged_val = ",".join(val)
-    to_pandas_dict['freebase_ids'][i] = key
-    to_pandas_dict['nominations'][i] = merged_val
+    with open(f'nominations_{name}.pkl', 'wb') as f:
+        pickle.dump(cache, f)
 
-ds = pd.DataFrame.from_dict(to_pandas_dict)
+    to_pandas_dict = defaultdict(dict)
 
-ds.to_csv(f'nominations_{name}.tsv', sep='\t')
+    for i, (key, val) in enumerate(cache.items()):
+        merged_val = ",".join(val)
+        to_pandas_dict['freebase_ids'][i] = key
+        to_pandas_dict['nominations'][i] = merged_val
+
+    ds = pd.DataFrame.from_dict(to_pandas_dict)
+
+    ds.to_csv(f'nominations_{name}.tsv', sep='\t')
 
 
