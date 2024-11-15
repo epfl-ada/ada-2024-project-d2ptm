@@ -2,7 +2,7 @@ import pandas as pd
 from SPARQLWrapper import SPARQLWrapper, JSON
 from tqdm import tqdm
 from collections import defaultdict
-from src.data import *
+from src.data import load_characters
 import time
 import pickle
 
