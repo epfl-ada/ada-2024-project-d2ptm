@@ -11,7 +11,7 @@
   <a href="#methodology">Methodology</a> •
   <a href="#team-organization">Team Organization</a> •
   <a href="#proposed-timeline">Proposed Timeline</a> •
-  <a href="#references">References</a>
+  <a href="#references">References</a> •
   <a href="#installation">Installation</a> •
   <a href="#project-structure">Project Structure</a>
 </p>
