@@ -72,9 +72,25 @@ We cleaned the data by removing NaNs and fixing date format as described in the 
 For the main analysis, we will focus on the USA subset of this dataset, resulting in 6694 movies and 30379 actors after cleaning the data.
 
 
-### Clustering Methodology
+### Partitioning Methodology
 
-TODO
+#### Films Selection
+As already mentioned, we will focus on the US part of the dataset. We will select movies that have `United States of America` in countries. If we take all the films with this property, we might end up having films whose main production country is not the US, but that were partially filmed in the US. So we additionally select only films `English Language` in languages. We additionally filter out films that have `NaN`s in `Revenue` or `ReleaseDate`.
+
+#### Graph Construction
+For each selected movie, we add an edge between any two actors of the movie. So the vertices in the graphs are actors and edges i
+
+#### Partitioning Algorithm
+We use the Louvain algorithm [[2]](https://arxiv.org/pdf/0803.0476) to construct partitions. In comparative community detection studies, this algorithm is one of the top in terms of speed and quality of partitions [[3]](https://arxiv.org/pdf/0908.1062).
+
+#### Films Corresponding to Partitions
+After running the partition algorithm, we get the clusters for actors, but using only actors, we will lose the information coming from movies like revenue and genres.
+
+So for each cluster we calculate which movies have $> 50\%$ and assign these movies to the cluster. From this definition, we can see that each is assigned to at most $1$ cluster.
+
+#### Quality Check
+To check the clustering quality numerically we use `coverage` and `partition` metrics, see the notebook for more info on them.
+
 
 ## Team organization
 
