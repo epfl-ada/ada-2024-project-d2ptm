@@ -13,7 +13,7 @@
   <a href="#proposed-timeline">Proposed Timeline</a> •
   <a href="#references">References</a>
   <a href="#installation">Installation</a> •
-  <a href="#project-structure">Project Structure</a> •
+  <a href="#project-structure">Project Structure</a>
 </p>
 
 ## Abstract
@@ -89,7 +89,7 @@ After running the partition algorithm, we get the clusters for actors, but using
 
 To use the movie information in the actor clusters, we assign each cluster some set of movies. To do the assignment, we fix the `SELECTION_THRESHOLD` hyperparameter, then for each cluster assign all movies that have more `SELECTION_THRESHOLD`$\%$ of actors in this cluster.
 
-We experimented with values `SELECTION_THRESHOLD` $\in \{0, 50\}$.
+We experimented with values `SELECTION_THRESHOLD` (0 or 50).
 
 `SELECTION_THRESHOLD` $= 0$ means that each cluster will have all the movies where at least one of the actors in the cluster participated.
 
