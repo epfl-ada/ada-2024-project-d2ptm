@@ -4,6 +4,9 @@ import seaborn as sns
 import ast
 from collections import Counter
 import numpy as np
+import networkx as nx
+import community as community_louvain
+
 
 def plot_nan_distribution(df, table_name=""):
     df_nans = df.isnull().sum()
@@ -80,7 +83,7 @@ def plot_decade_distribution(df, table_name):
     df_decade = df.groupby('Decade').size()
 
     plt.figure(figsize=(8,5))
-    df_decade.sort_values(ascending=True).plot(kind='barh', color='yellow')
+    df_decade.plot(kind='barh', color='yellow')
     plt.title(f'Number of {table_name} by Decade', fontsize=16)
     plt.xlabel('Total number', fontsize=12)
     plt.ylabel('Decade', fontsize=12)
@@ -122,3 +125,81 @@ def merge_movies_and_actors(movies, characters):
     res = pd.merge(movies, characters, on="WikipediaId", how="inner", suffixes=('', '_duplicate'))
     res = res[list(set(movies.columns.tolist() + characters.columns.tolist()))]
     return res.copy()
+
+
+def create_graph_from_data(movies_and_characters):
+    G = nx.Graph()
+    for movie_actors in movies_and_characters.groupby("FreebaseId")["FreebaseActorId"].unique():
+        for actor_l in movie_actors:
+            for actor_r in movie_actors:
+                if actor_l is not np.nan and actor_r is not np.nan and actor_l < actor_r:
+                    G.add_edge(actor_l, actor_r)
+            G.add_node(actor_l) # to add nodes without friends
+    return G
+
+
+def get_connected_components(G):
+    return nx.connected_components(G)
+
+def get_communities(G):
+    # Detect communities
+    partition = community_louvain.best_partition(G)
+
+    communities = {}
+    for node, comm_id in partition.items():
+        communities.setdefault(comm_id, []).append(node)
+    communities = communities.values()
+
+    return list(communities)
+
+
+def calculate_partition_quality(G, communities, movies, characters_movies, take_film_fraction):
+    actor_cnt_in_film = characters_movies.groupby("FreebaseId")["FreebaseActorId"].count()
+
+
+    df_partition_top_movie_info = None
+    dict_parition_info = {
+        "PartitionIndex": [],
+        "Size": [],
+        "Ethnicity": [],
+        "NaN Ethnicity Percent": []
+    }
+    communities_srt = sorted(list(communities), key=lambda x: len(x), reverse=True)
+    coverage, performance = nx.community.partition_quality(G, communities_srt)
+    print(f'The performance (partition quality) metric is {performance}')
+    print(f'The coverage (partition quality) metric is {coverage}')
+
+    for parition_index, community in enumerate(communities_srt):
+        community = list(community)
+        dict_parition_info["PartitionIndex"].append(parition_index)
+        dict_parition_info["Size"].append(len(community))
+       
+        popular_film_candidates = characters_movies[characters_movies["FreebaseActorId"].isin(community)].groupby("FreebaseId").count()["FreebaseActorId"]
+        popular_film_fraction = popular_film_candidates / actor_cnt_in_film.loc[popular_film_candidates.index]
+        popular_film_fraction = popular_film_fraction.sort_values(ascending=False)
+
+        # print(f'For partition {parition_index}, size {len(community)} taking fraction {(popular_film_fraction > TAKE_FILM_FRACTION).sum() / popular_film_fraction.shape[0]}')
+        
+        popular_film_data = movies[movies["FreebaseId"].isin(popular_film_fraction[(popular_film_fraction > take_film_fraction)].index)]
+        
+        popular_film_data_copy = popular_film_data.copy()
+        popular_film_data_copy["PartitionIndex"] = parition_index
+        if df_partition_top_movie_info is None:
+            df_partition_top_movie_info = popular_film_data_copy
+        else:
+            df_partition_top_movie_info = pd.concat([df_partition_top_movie_info, popular_film_data_copy], ignore_index=True)
+    df_partition_top_movie_info = df_partition_top_movie_info.sort_values(by="PartitionIndex")
+    return df_partition_top_movie_info
+
+
+def plot_partition_year_std_distribution(df):
+    plt.figure(figsize=(8, 4))
+    stds = []
+    for partition_index, partition in df.groupby('PartitionIndex'):
+        std = partition['Year'].std()
+        stds.append(std)
+    plt.hist(stds, bins=15, )
+    plt.title("Histogram of stds for the partitions and corresponding movie years")
+    plt.ylabel("Count")
+    plt.xlabel("Standard Deviation of the movie release year")
+    plt.show()

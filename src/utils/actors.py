@@ -285,8 +285,12 @@ class Cluster(ActorStats):
         female_count = actors[actors["ActorGender"] == "F"].shape[0]
         male_count = actors[actors["ActorGender"] == "M"].shape[0]
         total = female_count + male_count
-        female_percent = female_count / total
-        male_percent = male_count / total
+        if total > 0: # may occur if there are Nans for this data
+            female_percent = female_count / total
+            male_percent = male_count / total
+        else:
+            female_percent = -1
+            male_percent = -1
         if plot:
             plt.pie([female_percent, male_percent], labels=["Female", "Male"], autopct='%1.1f%%')
             plt.title("Gender distribution in this actor group")

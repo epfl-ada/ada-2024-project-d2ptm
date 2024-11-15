@@ -1,10 +1,7 @@
-from ..utils.actors import ActorStats
-from ..data import load_characters
-from ..data import load_movies
 import numpy as np
 import matplotlib.pyplot as plt
 from collections import Counter
-
+from src.utils.actors import Cluster
 
 class Graph():
     """
@@ -14,10 +11,18 @@ class Graph():
 
     def __init__(self, clusters):
         """
-        Creates a GraphStats object.
+        Creates a Graph object.
         """
         self.clusters = clusters
 
+    @staticmethod
+    def init_from_list_of_lists(characters, movies, communities):
+        clusters = []
+        for community in communities:
+            cluster = Cluster(characters=characters, movies=movies,
+                              actor_ids=community)
+            clusters.append(cluster)
+        return Graph(clusters)
     
     def age_distribution(self, plot=False):
         """
@@ -34,7 +39,8 @@ class Graph():
         list of float
             A list containing the mean age at release for each cluster in the graph.
         """
-        means = [np.nanmean(cluster.cluster_ages()) for cluster in self.clusters]
+        means = [cluster.cluster_ages() for cluster in self.clusters]
+        means = [np.nanmean(elem) for elem in means if len(elem) > 0]
         if plot:
             plt.hist(means)
             plt.title("Distribution of mean age at release accross clusters")
@@ -91,6 +97,8 @@ class Graph():
         """
 
         female_percentages = [cluster.cluster_genders()[0] for cluster in self.clusters]
+        # remove -1 from nans
+        female_percentages = list(filter(lambda x: x > -1, female_percentages)) 
         if plot:
             plt.hist(female_percentages)
             plt.title("Gender distribution accross clusters")
@@ -100,7 +108,7 @@ class Graph():
         return [(p, 1-p) for p in female_percentages]
 
     
-    def size_distribution(self, plot=False):
+    def size_distribution(self, plot=False, log=True, max_value=None):
         """
         Calculates the size distribution of the clusters.
         The size of each cluster is determined by the number of actors it contains.
@@ -109,19 +117,30 @@ class Graph():
         Parameters
         ----------
         plot : bool, optional
-            If True, a histogram displaying the size distribution of clusters will be shown. Defaults to False.
-        
+            If True, a histogram displaying the size distribution of
+            clusters will be shown. Defaults to False.
+        log: bool, optional
+            If True, set yscale to log (Default True)
+        max_value: int, optional
+            If not None, limit the plot to the [0, max_value] range.
+            Default to None.
+
         Returns
         -------
         list of int
-            A list containing the sizes of the clusters, where each size represents the number of actors in a cluster.
+            A list containing the sizes of the clusters, where each size represents
+            the number of actors in a cluster.
         """
         sizes = [len(cluster.actor_ids) for cluster in self.clusters]
+        if max_value is not None:
+            sizes = list(filter(lambda x: x <= max_value, sizes))
         if plot:
             plt.hist(sizes)
             plt.title("Size distribution of clusters")
             plt.xlabel("Number of actors")
             plt.ylabel("Number of clusters")
+            if log:
+                plt.yscale("log")
             plt.show()
         return sizes
 
@@ -167,7 +186,7 @@ class Graph():
             elif n == 3:
                 suffix = "rd"
             plt.title(f"Distribution of {n}{suffix} prefered genre across clusters")
-            plt.xlabel("Nth prefered genre")
+            plt.xlabel(f"{n}{suffix} prefered genre")
             plt.ylabel("Number of clusters")
             plt.show()
         return nth_genres
