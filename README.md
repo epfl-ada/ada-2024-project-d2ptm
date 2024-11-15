@@ -48,22 +48,20 @@ While answering these questions provides a comprehensive analysis for the USA mo
 
 ### Datasets and pre-processing
 
-Our primary dataset is the CMU movie datasets [add reference]. TODO add description.
+Our primary dataset is the CMU Movie Summary Corpus [[1]](#cmu_dataset). It contains 42306 movies with their Wikipedia-based plot summaries and Freebase-based metadata, including revenue, genre, release data, runtime, language, country of origin, and information about movie characters and corresponding actors (date of birth, age, height, ethnicity, and gender).
 
-To answer the awards-related questions, we supplement this dataset with the following ones:
+To answer the awards-related questions, we supplement this dataset with the information from Wikidata obtained via our [SPARQL scrapping algorithm](scrape_awards.py) and actors' FreebaseID from the CMU movie dataset.
 
-- Academy Awards: TODO
-- Golden Globe Awards: TODO
-- Emmy Awards: TODO
-
-TODO_ADD_CLEANING_PROCESS_DESCRIPTION
+We cleaned the data by doing TODO, as described in the [notebook](results.ipynb).
 
 For the main analysis, we will focus on the USA subset of this datasets, resulting in TODO_ADD_NUMBER movies and TODO actors after cleaning the data.
 
 ### Possible limitations
-During data pre-processing, we found that only about 20% of U.S. movies in the dataset include revenue details. 
-This lack of data can lead to biased insights, as the missing revenue values may disproportionately affect lower-budget or independent films. 
+
+During data pre-processing, we found that only about 20% of U.S. movies in the dataset include revenue details.
+This lack of data can lead to biased insights, as the missing revenue values may disproportionately affect lower-budget or independent films.
 As a result, our analysis might favor higher-budget films, giving an incomplete and potentially skewed view of the U.S. movie industry.
+
 ### Methodology
 
 TODO
@@ -76,8 +74,14 @@ TODO, mb merge with team organization.
 
 The full list of authors and the assigned tasks for the Project-3 are presented below:
 
-- TODO
+- Petr Grinberg
+- Daniil Pyatko
+- Paul Guillon
+- Maksim Vasiliev
+- Tymur Tytarenko
 
 ## References
 
-1. TODO_ADD_DATASETS_AND_ALGORITHMS_PAPERS
+1. <a id="cmu_dataset"></a> Bamman, D., O’Connor, B., & Smith, N. A. (2013, August). Learning latent personas of film characters. In Proceedings of the 51st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) (pp. 352-361).
+
+TODO_ADD_DATASETS_AND_ALGORITHMS_PAPERS
