@@ -8,4 +8,5 @@ scikit-learn
 sparqlwrapper
 tqdm
 python-louvain
+seaborn
 
