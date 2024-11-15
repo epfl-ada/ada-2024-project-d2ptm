@@ -78,7 +78,7 @@ For the main analysis, we will focus on the USA subset of this dataset, resultin
 As already mentioned, we will focus on the US part of the dataset. We will select movies that have `United States of America` in countries. If we take all the films with this property, we might end up having films whose main production country is not the US, but that were partially filmed in the US. So we additionally select only films `English Language` in languages. We additionally filter out films that have `NaN`s in `Revenue` or `ReleaseDate`.
 
 #### Graph Construction
-For each selected movie, we add an edge between any two actors of the movie. So the vertices in the graphs are actors and edges i
+For each selected movie, we add an edge between any two actors of the movie. So the vertices in the graphs are actors and there is an edge $\Leftrightarrow$ there is a movie with both of these actors.
 
 #### Partitioning Algorithm
 We use the Louvain algorithm [[2]](https://arxiv.org/pdf/0803.0476) to construct partitions. In comparative community detection studies, this algorithm is one of the top in terms of speed and quality of partitions [[3]](https://arxiv.org/pdf/0908.1062).
