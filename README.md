@@ -60,6 +60,10 @@ TODO_ADD_CLEANING_PROCESS_DESCRIPTION
 
 For the main analysis, we will focus on the USA subset of this datasets, resulting in TODO_ADD_NUMBER movies and TODO actors after cleaning the data.
 
+### Possible limitations
+During data pre-processing, we found that only about 20% of U.S. movies in the dataset include revenue details. 
+This lack of data can lead to biased insights, as the missing revenue values may disproportionately affect lower-budget or independent films. 
+As a result, our analysis might favor higher-budget films, giving an incomplete and potentially skewed view of the U.S. movie industry.
 ### Methodology
 
 TODO
