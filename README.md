@@ -86,7 +86,18 @@ We use the Louvain algorithm [[2]](https://arxiv.org/pdf/0803.0476) to construct
 #### Films Corresponding to Partitions
 After running the partition algorithm, we get the clusters for actors, but using only actors, we will lose the information coming from movies like revenue and genres.
 
-So for each cluster we calculate which movies have $> 50\%$ and assign these movies to the cluster. From this definition, we can see that each is assigned to at most $1$ cluster.
+To use the movie information in the actor clusters, we assign each cluster some set of movies. To do the assignment, we fix the `SELECTION_THRESHOLD` hyperparameter, then for each cluster assign all movies that have at least `SELECTION_THRESHOLD`$\%$ of actors in this cluster.
+
+We experimented with values `SELECTION_THRESHOLD` $\in \{0, 50\}$.
+
+`SELECTION_THRESHOLD` $= 0$ means that each cluster will have all the movies where at least one of the actor in the cluster participated.
+
+`SELECTION_THRESHOLD` $= 50$ means that each cluster will have all the movies that have the most part of the cast in the cluster. In contrast to `SELECTION_THRESHOLD` $= 0$, we will have that each movie can belong to at most one cluster.
+
+With the `SELECTION_THRESHOLD` $= 0$, we get more movies in clusters than for `SELECTION_THRESHOLD` $= 50$, but they can be less related to the cluster.
+
+The determination of the right value of hyperparameter is the future direction of our work.
+
 
 #### Quality Check
 To check the clustering quality numerically we use `coverage` and `partition` metrics, see the notebook for more info on them.
