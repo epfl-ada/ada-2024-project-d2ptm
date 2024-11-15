@@ -7,3 +7,5 @@ matplotlib
 scikit-learn
 sparqlwrapper
 tqdm
+python-louvain
+
