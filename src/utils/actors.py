@@ -353,10 +353,11 @@ class ActorStats():
         # Sort by genres by count
         genres = dict(genres.most_common())
         if plot:
-            x = np.arange(len(genres))
+            num_values = 40 #keep only 40 first genres for readability
+            x = np.arange(num_values)
             figure = plt.figure(figsize=(10, 5))
-            plt.bar(x, genres.values())
-            plt.xticks(x, genres.keys(), rotation=90, fontsize=8)
+            plt.bar(x, list(genres.values())[:num_values])
+            plt.xticks(x, list(genres.keys())[:num_values], rotation=90, fontsize=8)
             plt.title("Genre distribution in this actor group")
             plt.xlabel("Genre")
             plt.ylabel("Movie count")

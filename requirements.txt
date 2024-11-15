@@ -6,3 +6,4 @@ networkx==3.4.2
 matplotlib
 scikit-learn
 sparqlwrapper
+tqdm

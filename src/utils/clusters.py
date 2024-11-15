@@ -1,7 +1,9 @@
 from ..utils.actors import ActorStats
 import numpy as np
 import matplotlib.pyplot as plt
+from collections import Counter
 from tqdm.notebook import tqdm
+
 
 class ClusterStats():
     """
@@ -71,3 +73,114 @@ class ClusterStats():
             plt.ylabel("Number of clusters")
             plt.show()
         return means   
+
+    
+    def gender_distribution(self, clusters, plot=False):
+        """
+        Calculates the gender distribution across a list of clusters.
+        For each cluster, the proportion of female and male actors is determined.
+        Optionally, it can plot a histogram of the proportion of female actors across clusters.
+        
+        Parameters
+        ----------
+        clusters : list of Cluster
+            A list of Cluster objects for which the gender distribution will be calculated.
+        
+        plot : bool, optional
+            If True, a histogram displaying the distribution of female actor proportions across clusters will be shown. Defaults to False.
+        
+        Returns
+        -------
+        list of tuple
+            A list of tuples, where each tuple contains:
+            - The proportion of female actors (float) in a cluster.
+            - The proportion of male actors (float) in the same cluster.
+        """
+
+        female_percentages = [self.actor_stats.cluster_genders(cluster)[0] for cluster in clusters]
+        if plot:
+            plt.hist(female_percentages)
+            plt.title("Gender distribution accross clusters")
+            plt.xlabel("Proportion of female actors")
+            plt.ylabel("Number of clusters")
+            plt.show()
+        return [(p, 1-p) for p in female_percentages]
+
+    
+    def size_distribution(self, clusters, plot=False):
+        """
+        Calculates the size distribution of a list of clusters.
+        The size of each cluster is determined by the number of actors it contains.
+        Optionally, it can plot a histogram of the cluster sizes.
+        
+        Parameters
+        ----------
+        clusters : list of Cluster
+            A list of Cluster objects for which the size distribution will be calculated.
+        
+        plot : bool, optional
+            If True, a histogram displaying the size distribution of clusters will be shown. Defaults to False.
+        
+        Returns
+        -------
+        list of int
+            A list containing the sizes of the clusters, where each size represents the number of actors in a cluster.
+        """
+        sizes = [len(cluster.actor_ids) for cluster in clusters]
+        if plot:
+            plt.hist(sizes)
+            plt.title("Size distribution of clusters")
+            plt.xlabel("Number of actors")
+            plt.ylabel("Number of clusters")
+            plt.show()
+        return sizes
+
+    
+    def nth_genre_distribution(self, clusters, n, plot=False):
+        """
+        Calculates the distribution of the nth most preferred genre across a list of clusters.
+        For each cluster, the nth most common genre is identified and counted.
+        Optionally, it can plot a bar chart of the distribution.
+        
+        Parameters
+        ----------
+        clusters : list of Cluster
+            A list of Cluster objects for which the nth most preferred genre distribution will be calculated.
+        
+        n : int
+            The rank of the genre to analyze (e.g., 1 for the most preferred genre, 2 for the second most preferred, etc.).
+        
+        plot : bool, optional
+            If True, a bar chart displaying the distribution of the nth preferred genre across clusters will be shown.
+        
+        Returns
+        -------
+        dict
+            A dictionary where keys are genres and values are the counts of clusters that have that genre as the nth most preferred,
+            sorted in descending order of counts.
+        """
+        nth_genres = []
+        index = n - 1
+        for i in tqdm(range(len(clusters))):
+            cluster_genres = list(self.actor_stats.cluster_genres(clusters[i]).keys())
+            if len(cluster_genres) > index:
+                nth_genres.append(cluster_genres[index])
+        nth_genres = dict(Counter(nth_genres).most_common())
+        if plot:
+            max_num_values = 40 #keep maximum 40 first genres for readability
+            x = np.arange(min(len(nth_genres), max_num_values))
+            figure = plt.figure(figsize=(10, 5))
+            plt.bar(x, list(nth_genres.values())[:max_num_values])
+            plt.xticks(x, list(nth_genres.keys())[:max_num_values], rotation=90, fontsize=8)
+            suffix = "th"
+            if n == 1:
+                suffix = "st"
+            elif n == 2:
+                suffix = "nd"
+            elif n == 3:
+                suffix = "rd"
+            plt.title(f"Distribution of {n}{suffix} prefered genre across clusters")
+            plt.xlabel("Nth prefered genre")
+            plt.ylabel("Number of clusters")
+            plt.show()
+        return nth_genres
