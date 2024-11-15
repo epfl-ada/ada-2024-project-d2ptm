@@ -111,4 +111,6 @@ Each member will focus on answering one of the above research questions:
 
 1. <a id="cmu_dataset"></a> Bamman, D., O’Connor, B., & Smith, N. A. (2013, August). Learning latent personas of film characters. In Proceedings of the 51st Annual Meeting of the Association for Computational Linguistics (Volume 1: Long Papers) (pp. 352-361).
 2. <a id="louvain_algorithm"></a> Blondel, V. D., Guillaume, J. L., Lambiotte, R., & Lefebvre, E. (2008). Fast unfolding of communities in large networks. Journal of statistical mechanics: theory and experiment, 2008(10), P10008.
+3. <a id="cluster_quality_metric"></a> Fortunato, S. (2010). Community detection in graphs. Physics reports, 486(3-5), 75-174.
+
 
