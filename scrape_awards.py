@@ -3,7 +3,6 @@ from SPARQLWrapper import SPARQLWrapper, JSON
 from tqdm import tqdm
 from collections import defaultdict
 from src.data import *
-from src.utils.actors_utils import *
 import time
 import pickle
 
