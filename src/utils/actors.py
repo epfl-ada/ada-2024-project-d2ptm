@@ -1,12 +1,13 @@
-from ..data import load_characters
-from ..data import load_movies
-from ..utils.helpers import merge_movies_and_actors
-from collections import Counter
 import ast
-import numpy as np
-import matplotlib.pyplot as plt
+from collections import Counter
 
-        
+import matplotlib.pyplot as plt
+import numpy as np
+
+from ..data import load_characters, load_movies
+from ..utils.helpers import merge_movies_and_actors
+
+
 class ActorStats:
     """
     Gives access to various functions about actors.
@@ -29,45 +30,52 @@ class ActorStats:
     def actor_name(self, actor_id):
         """
         Gets actor name.
-        
+
         Parameters
         ----------
         actor_id : str
             Freebase actor ID
-    
+
         Returns
         -------
         str
             actor name corresponding to actor ID
         """
-        return self.characters[self.characters["FreebaseActorId"] == actor_id].iloc[0]["ActorName"]
-    
+        return self.characters[self.characters["FreebaseActorId"] == actor_id].iloc[0][
+            "ActorName"
+        ]
+
     def actor_movie_ids(self, actor_id):
         """
         Gets ids from all the movies that the actor played in.
-        
+
         Parameters
         ----------
         actor_id : str
             Freebase actor ID
-    
+
         Returns
         -------
         list
             a list of all movie ids that the actor played in
         """
-        return self.characters[self.characters["FreebaseActorId"] == actor_id]["WikipediaId"].dropna().to_list()
-    
-    
+        return (
+            self.characters[self.characters["FreebaseActorId"] == actor_id][
+                "WikipediaId"
+            ]
+            .dropna()
+            .to_list()
+        )
+
     def actor_movies(self, actor_id):
         """
         Gets all the movies that the actor played in.
-        
+
         Parameters
         ----------
         actor_id : str
             Freebase actor ID
-    
+
         Returns
         -------
         DataFrame
@@ -75,116 +83,113 @@ class ActorStats:
         """
         movie_ids = self.actor_movie_ids(actor_id)
         return self.movies[self.movies["WikipediaId"].isin(movie_ids)]
-    
-    
+
     def actor_movie_names(self, actor_id):
         """
         Gets names of all the movies that the actor played in.
-        
+
         Parameters
         ----------
         actor_id : str
             Freebase actor ID
-    
+
         Returns
         -------
         list
             a list of all movie names that the actor played in
         """
         return self.actor_movies(actor_id)["MovieName"].dropna().to_list()
-    
-    
+
     def actor_mean_revenue(self, actor_id):
         """
         Gets mean revenue of all the movies that the actor played in.
-        
+
         Parameters
         ----------
         actor_id : str
             Freebase actor ID
-    
+
         Returns
         -------
         float64
             average revenue of the movies that the actor played in
         """
         return self.actor_movies(actor_id)["Revenue"].mean()
-    
-    
+
     def actor_total_revenue(self, actor_id):
         """
         Gets total revenue of all the movies that the actor played in.
-        
+
         Parameters
         ----------
         actor_id : str
             Freebase actor ID
-    
+
         Returns
         -------
         float64
             total revenue of the movies that the actor played in
         """
         return self.actor_movies(actor_id)["Revenue"].sum()
-    
-    
+
     def actor_movie_count(self, actor_id):
         """
         Gets number of movies that the actor played in.
-        
+
         Parameters
         ----------
         actor_id : str
             Freebase actor ID
-    
+
         Returns
         -------
         int
             number of movies that the actor played in
         """
         return self.actor_movies(actor_id).shape[0]
-    
-    
+
     def actor_genre_counts(self, actor_id):
         """
         Counts the number of times an actor played in each genre.
-        
+
         Parameters
         ----------
         actor_id : str
             Freebase actor ID
-    
+
         Returns
         -------
         Counter
             dict like object where keys are genres and values are counts
         """
-        return self.actor_movies(actor_id)["Genres"].apply(lambda genres: Counter(list(ast.literal_eval(genres).values()))).sum()
-    
-    
+        return (
+            self.actor_movies(actor_id)["Genres"]
+            .apply(lambda genres: Counter(list(ast.literal_eval(genres).values())))
+            .sum()
+        )
+
     def actor_prefered_genres(self, actor_id, n):
         """
         Gets the most common genres for an actor.
-        
+
         Parameters
         ----------
         actor_id : str
             Freebase actor ID
         n: int
             Top n values to return
-    
+
         Returns
         -------
         list
-            list of name-count pairs 
+            list of name-count pairs
         """
         return self.actor_genre_counts(actor_id).most_common(n)
-    
-    
+
     def print_actor_stats(self, actor_id):
         """
         Prints some statistics about this actor.
-        
+
         Parameters
         ----------
         actor_id : str
@@ -194,14 +199,18 @@ class ActorStats:
         print(f"Name: {self.actor_name(actor_id)}")
         print(f"  * Played in {self.actor_movie_count(actor_id)} movies.")
         print(f"  * Favourite genre: {fav_genre} ({fav_genre_count} movies).")
-        print(f"  * Total movie revenues: {self.actor_total_revenue(actor_id):16,.0f}$.")
-        print(f"  * Average movie revenue: {self.actor_mean_revenue(actor_id):15,.0f}$.")
+        print(
+            f"  * Total movie revenues: {self.actor_total_revenue(actor_id):16,.0f}$."
+        )
+        print(
+            f"  * Average movie revenue: {self.actor_mean_revenue(actor_id):15,.0f}$."
+        )
 
 
 class Cluster(ActorStats):
     """
     A cluster contains a list of actors and offers various functions to
-    compute and plot specific statistics about it. 
+    compute and plot specific statistics about it.
     """
 
     def __init__(self, characters, movies, actor_ids):
@@ -210,13 +219,14 @@ class Cluster(ActorStats):
         """
         super().__init__(characters, movies)
         self.actor_ids = actor_ids
-        self.movies_and_actors = merge_movies_and_actors(self.movies, characters[characters["FreebaseActorId"].isin(actor_ids)])
+        self.movies_and_actors = merge_movies_and_actors(
+            self.movies, characters[characters["FreebaseActorId"].isin(actor_ids)]
+        )
 
-    
     def __str__(self):
         """
         Returns a string representation of the actor IDs in this object.
-        
+
         Returns
         -------
         str
@@ -224,11 +234,10 @@ class Cluster(ActorStats):
         """
         return str(self.actor_ids)
 
-    
     def cluster_mean_revenue(self):
         """
         Gets mean revenue generated by the actors in the cluster.
-    
+
         Returns
         -------
         float64
@@ -236,11 +245,10 @@ class Cluster(ActorStats):
         """
         return self.movies_and_actors.groupby("FreebaseActorId").Revenue.mean().mean()
 
-
     def cluster_movies(self):
         """
         Gets all the movies where at least one actor of the cluster played in.
-    
+
         Returns
         -------
         DataFrame
@@ -249,13 +257,12 @@ class Cluster(ActorStats):
         movie_ids = self.movies_and_actors["WikipediaId"].unique()
         return self.movies[self.movies["WikipediaId"].isin(movie_ids)]
 
-    
     def cluster_total_revenue(self):
         """
         Gets total revenue generated by a cluster.
         Each movie is only counted once even if several actors from the
         group played in the same movie.
-    
+
         Returns
         -------
         float64
@@ -263,17 +270,16 @@ class Cluster(ActorStats):
         """
         return self.cluster_movies()["Revenue"].sum()
 
-
     def cluster_genders(self, plot=False):
         """
         Calculates the percentage of female and male actors in the cluster.
         Optionally, it can plot a pie chart of the gender distribution in the cluster.
-    
+
         Parameters
         ----------
             plot : bool, optional
                 If True, a pie chart displaying the gender distribution is shown. Defaults to False.
-    
+
         Returns
         -------
             tuple: A tuple containing two float values:
@@ -281,33 +287,38 @@ class Cluster(ActorStats):
                 - male_percent (float): The percentage of male actors in the cluster.
         """
         # Only keep one movie per actor
-        actors = self.characters[self.characters["FreebaseActorId"].isin(self.actor_ids)].drop_duplicates(subset="FreebaseActorId")
+        actors = self.characters[
+            self.characters["FreebaseActorId"].isin(self.actor_ids)
+        ].drop_duplicates(subset="FreebaseActorId")
         female_count = actors[actors["ActorGender"] == "F"].shape[0]
         male_count = actors[actors["ActorGender"] == "M"].shape[0]
         total = female_count + male_count
-        if total > 0: # may occur if there are Nans for this data
+        if total > 0:  # may occur if there are Nans for this data
             female_percent = female_count / total
             male_percent = male_count / total
         else:
             female_percent = -1
             male_percent = -1
         if plot:
-            plt.pie([female_percent, male_percent], labels=["Female", "Male"], autopct='%1.1f%%')
+            plt.pie(
+                [female_percent, male_percent],
+                labels=["Female", "Male"],
+                autopct="%1.1f%%",
+            )
             plt.title("Gender distribution in this actor group")
             plt.show()
         return female_percent, male_percent
-
 
     def cluster_ages(self, plot=False):
         """
         Gets the ages of actors at the time of release for a cluster, for each of their roles.
         Optionally, it can plot a histogram of the age distribution across the cluster.
-        
+
         Parameters
-        ----------        
+        ----------
         plot : bool, optional
             If True, a histogram displaying the age distribution at release will be shown. Defaults to False.
-        
+
         Returns
         -------
         list of float
@@ -315,7 +326,11 @@ class Cluster(ActorStats):
         """
         roles = self.characters[self.characters["FreebaseActorId"].isin(self.actor_ids)]
         # Keep only positive and non NaN values
-        ages = roles[roles["ActorAgeAtRelease"] > 0]["ActorAgeAtRelease"].dropna().to_list()
+        ages = (
+            roles[roles["ActorAgeAtRelease"] > 0]["ActorAgeAtRelease"]
+            .dropna()
+            .to_list()
+        )
         if plot:
             plt.hist(ages)
             plt.title("Age at release distribution in this actor group")
@@ -324,29 +339,30 @@ class Cluster(ActorStats):
             plt.show()
         return ages
 
-
     def cluster_genres(self, plot=False):
         """
         Gets the genre distribution for movies within a specified cluster.
         Optionally, it can plot a bar chart of the genre distribution across the cluster.
-        
+
         Parameters
-        ----------        
+        ----------
         plot : bool, optional
             If True, a bar chart displaying the genre distribution will be shown. Defaults to False.
-        
+
         Returns
         -------
         dict
             A dictionary where keys are genres and values are the counts of movies within the cluster for each genre.
         """
-        genres = self.cluster_movies()["Genres"].apply(
-            lambda genres: Counter(list(ast.literal_eval(genres).values()))
-        ).sum()
+        genres = (
+            self.cluster_movies()["Genres"]
+            .apply(lambda genres: Counter(list(ast.literal_eval(genres).values())))
+            .sum()
+        )
         # Sort by genres by count
         genres = dict(genres.most_common())
         if plot:
-            num_values = 40 #keep only 40 first genres for readability
+            num_values = 40  # keep only 40 first genres for readability
             x = np.arange(num_values)
             figure = plt.figure(figsize=(10, 5))
             plt.bar(x, list(genres.values())[:num_values])
