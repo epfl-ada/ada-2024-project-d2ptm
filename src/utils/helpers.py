@@ -1,5 +1,9 @@
 import ast
-from collections import Counter
+import json
+import os
+import random
+from collections import Counter, OrderedDict
+from pathlib import Path
 
 import community as community_louvain
 import matplotlib.pyplot as plt
@@ -9,7 +13,25 @@ import pandas as pd
 import seaborn as sns
 
 
-def plot_nan_distribution(df, table_name=""):
+def set_random_seed(seed=1):
+    np.random.seed(seed)
+    random.seed(seed)
+    os.environ["PYTHONHASHSEED"] = str(seed)
+
+
+def read_json(fname):
+    fname = Path(fname)
+    with fname.open("rt") as handle:
+        return json.load(handle, object_hook=OrderedDict)
+
+
+def write_json(content, fname):
+    fname = Path(fname)
+    with fname.open("wt") as handle:
+        json.dump(content, handle, indent=4, sort_keys=False)
+
+
+def plot_nan_distribution(df, table_name="", log_scale=False):
     df_nans = df.isnull().sum()
 
     if df_nans.values.max() == 0:
@@ -26,6 +48,8 @@ def plot_nan_distribution(df, table_name=""):
     plt.title(f"Missing Values in {table_name} Table")
     plt.xticks(rotation=45, ha="right")
     plt.ylabel("Number of Missing Values")
+    if log_scale:
+        plt.yscale("log")
     plt.tight_layout()
     plt.show()
 
