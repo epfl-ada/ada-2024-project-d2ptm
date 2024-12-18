@@ -9,4 +9,5 @@ sparqlwrapper
 tqdm
 python-louvain
 seaborn
-
+tqdm
+ipywidgets
