@@ -256,7 +256,7 @@ class Cluster(ActorStats):
         """
         return self.movies_and_actors.groupby("FreebaseActorId").Revenue.median().median()
 
-    def cluster_movies(self):
+    def cluster_movies(self, select_type="any", num_actors_in_movie=None):
         """
         Gets all the movies where at least one actor of the cluster played in.
 
@@ -265,9 +265,20 @@ class Cluster(ActorStats):
         DataFrame
             a DataFrame containing metadata of all movies that the group of actors played in.
         """
-        movie_ids = self.movies_and_actors["WikipediaId"].unique()
-        return self.movies[self.movies["WikipediaId"].isin(movie_ids)]
+        if select_type == "any":
+            movie_ids = self.movies_and_actors["WikipediaId"].unique()
+            return self.movies[self.movies["WikipediaId"].isin(movie_ids)]
+        elif select_type == "half":
+            assert num_actors_in_movie is not None
 
+            good_movie_ids = []
+            cluster_num_actors_in_movie = dict(self.movies_and_actors.groupby("WikipediaId").size())
+            for movie, actor_cnt in cluster_num_actors_in_movie.items():
+                if actor_cnt / num_actors_in_movie[movie] >= 0.5:
+                    good_movie_ids.append(movie)
+            return self.movies[self.movies["WikipediaId"].isin(good_movie_ids)]
+        else:
+            assert False
     def cluster_actors(self):
         """
         Gets all the actor names in the cluster.

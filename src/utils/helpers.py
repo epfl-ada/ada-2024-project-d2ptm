@@ -4,6 +4,7 @@ import os
 import random
 from collections import Counter, OrderedDict
 from pathlib import Path
+from copy import deepcopy
 
 import community as community_louvain
 import matplotlib.pyplot as plt
@@ -19,6 +20,17 @@ def set_random_seed(seed=1):
     os.environ["PYTHONHASHSEED"] = str(seed)
 
 
+def add_filter_metadata(f_filter):
+    def f_filter_with_metadata(df, *args, **kwargs):
+        args_list = list(map(str, args)) + [f"{k}={v}" for k, v in kwargs.items()]
+        filter_metadata = f"{f_filter.__name__}({' '.join(args_list)})"
+        if len(df.attrs) == 0:
+            df.attrs = {"filter_metadata": []}
+        df.attrs["filter_metadata"] = df.attrs["filter_metadata"] + [filter_metadata]
+        return f_filter(df, *args, **kwargs)
+    return f_filter_with_metadata
+
+
 def read_json(fname):
     fname = Path(fname)
     with fname.open("rt") as handle:
@@ -29,6 +41,21 @@ def write_json(content, fname):
     fname = Path(fname)
     with fname.open("wt") as handle:
         json.dump(content, handle, indent=4, sort_keys=False)
+
+
+def write_communities(G, communities, fname):
+    out = deepcopy(G.graph["filter_metadata"])
+    out["data"] = communities
+    write_json(out, fname)
+
+def read_communities(G, fname):
+    out_json = read_json(fname)
+    assert out_json["movies_filter_metadata"] == G.graph["filter_metadata"]["movies_filter_metadata"], \
+        f"Expected {out_json["movies_filter_metadata"]}, got {G.graph["filter_metadata"]["movies_filter_metadata"]}"
+    assert out_json["characters_filter_metadata"] == G.graph["filter_metadata"]["characters_filter_metadata"], \
+        f"Expected {out_json["characters_filter_metadata"]}, got {G.graph["filter_metadata"]["characters_filter_metadata"]}"
+    return out_json["data"]
+
 
 
 def plot_nan_distribution(df, table_name="", log_scale=False):
@@ -54,6 +81,7 @@ def plot_nan_distribution(df, table_name="", log_scale=False):
     plt.show()
 
 
+@add_filter_metadata
 def filter_by_country(df, country):
     df["CorrectCountry"] = df["Countries"].map(
         lambda x: country in ast.literal_eval(x).values()
@@ -62,7 +90,20 @@ def filter_by_country(df, country):
     df = df.drop(columns=["CorrectCountry"])
     return df
 
+def filter_by_genre(df, genre):
+    df["CorrectGenre"] = df["Genres"].map(
+        lambda x: genre in ast.literal_eval(x).values()
+    )
+    df = df[df["CorrectGenre"] == True].copy()
+    df = df.drop(columns=["CorrectGenre"])
+    return df
 
+@add_filter_metadata
+def drop_nans_subset(df, subset):
+    return df.dropna(subset=subset).copy()
+
+
+@add_filter_metadata
 def drop_nans(df, column):
     return df[df[column].notnull()].copy()
 
@@ -90,7 +131,7 @@ def get_language_distribution(df, table_name, limit=None):
     ratio = round(ratio, 2)
     print(f"The top-1 language is in {ratio}% of the movies")
 
-
+@add_filter_metadata
 def filter_by_language(df, language):
     df["CorrectLanguage"] = df["Languages"].map(
         lambda x: language in ast.literal_eval(x).values()
@@ -99,7 +140,7 @@ def filter_by_language(df, language):
     df = df.drop(columns=["CorrectLanguage"])
     return df
 
-
+@add_filter_metadata
 def fix_date(df, column):
     df[column] = pd.to_datetime(df[column], format="mixed", errors="coerce")
     return df.copy()
@@ -155,6 +196,8 @@ def merge_movies_and_actors(movies, characters):
         movies, characters, on="WikipediaId", how="inner", suffixes=("", "_duplicate")
     )
     res = res[list(set(movies.columns.tolist() + characters.columns.tolist()))]
+    res.attrs["movies_filter_metadata"] = movies.attrs.get("filter_metadata", [])
+    res.attrs["characters_filter_metadata"] = characters.attrs.get("filter_metadata", [])
     return res.copy()
 
 
@@ -172,6 +215,7 @@ def create_graph_from_data(movies_and_characters):
                 ):
                     G.add_edge(actor_l, actor_r)
             G.add_node(actor_l)  # to add nodes without friends
+    G.graph["filter_metadata"] = movies_and_characters.attrs
     return G
 
 
@@ -179,9 +223,9 @@ def get_connected_components(G):
     return nx.connected_components(G)
 
 
-def get_communities(G):
+def get_communities(G, seed=1):
     # Detect communities
-    partition = community_louvain.best_partition(G)
+    partition = community_louvain.best_partition(G, random_state=seed)
 
     communities = {}
     for node, comm_id in partition.items():
