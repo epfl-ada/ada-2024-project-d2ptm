@@ -90,6 +90,13 @@ def filter_by_country(df, country):
     df = df.drop(columns=["CorrectCountry"])
     return df
 
+def filter_by_genre(df, genre):
+    df["CorrectGenre"] = df["Genres"].map(
+        lambda x: genre in ast.literal_eval(x).values()
+    )
+    df = df[df["CorrectGenre"] == True].copy()
+    df = df.drop(columns=["CorrectGenre"])
+    return df
 
 @add_filter_metadata
 def drop_nans_subset(df, subset):
