@@ -27,20 +27,27 @@ The traditional career path of an actor can be different in different countries.
 
 Before going into actors' analysis, let's look how our data is distributed.
 
+<div style="text-align: center;">
 <img class="image" width src="assets/images/us_movies_decade.png" style="width: 500px; height: auto;"/>
+</div>
 
 We see that most of the included movies were produced in 2000 and 80-90s. While such uneven distribution is usually considered harmful for the analysis, we believe it is still meaningful here. Indeed, the cinematography industry is developing and more and more movies are being produced. The sudden drop in 2010s is due to the date of dataset creation, i.e., 2013.
 
+<div style="text-align: center;">
 <img class="image" width src="assets/images/us_movies_revenue.png" style="width: 500px; height: auto;"/>
+</div>
 
 The revenue (in $$ \$ $$) can vary, but it is centered around $$ \sim 10M $$ \$ $$.
 
+<div style="text-align: center;">
 <img class="image" width src="assets/images/us_movies_genres.png" style="width: 500px; height: auto;"/>
+</div>
 
 Many genres are represented in the dataset with Drama and Comedy being the most often ones.
 
 We can also connect movie information with the actors that played it. Such analysis will be the core of following sections. For example, we can look at the famous Harrison Ford:
 
+<div style="display: flex; justify-content: center; align-items: center;">
 <div class="card">
   <div class="card__image">
     <img class="image" src="assets/images/indiana_jones.jpg" style="width: 500px; height: auto;"/>
@@ -56,6 +63,7 @@ We can also connect movie information with the actors that played it. Such analy
       </h4>
     </div>
   </div>
+</div>
 </div>
 
 We can also look at the general distributions, like a pie chart for the actors' gender:
@@ -106,7 +114,9 @@ The awards data is not presented in the CMU dataset, therefore we take it from [
 
 For humans, it is usual that their community and surrounding matters a lot on their life-path. But **does it hold true for the actor's career?** Let's leverage awards data and calculate the proportion of actors with awards or nominations in each community:
 
+<div style="text-align: center;">
 <img class="image" width src="assets/images/q1.png" style="width: 700px; height: auto;"/>
+</div>
 
 Note that for the very small (in terms of number of actors) clusters the density can vary from $$0$$ to $$1$$ a lot. Given that we have 30378 vertices in our graph, these clusters with less than $$20$$ actors are not very representative. However, if we look at the communities with more than $$20$$ people, we see a linear correlation (linear for log-scale x-axis) between the density and cluster size. To support this idea we trained a linear regression model on log-scale cluster sizes as input. The depicted orange line represents the models' predictions which result in $$0.19 R^2$$ score and positive slope. This indicates that, indeed, the number of awards within the community rises as the community grows. But **how the number of awards can increase as the community gets new members?** There are only two ways:
 
@@ -117,31 +127,43 @@ The box plot on the right also suggests that for non-anomalous clusters (with mo
 
 Let's look at the relation between the revenue and awards. How often have you seen movie trailers advertising themselves via showing that their actors have cool awards, such as Oscars? We guess, a lot. Awards and nominations are not given for nothing. They highlight the skills and experience of an actor. People want to have trust in the movie because they pay for it. The well-known and awarded actors improve this factor and can attract more visitor to the cinemas. Let's verify this intuitive claim using our data:
 
+<div style="text-align: center;">
 <img class="image" width src="assets/images/q3.png" style="width: 500px; height: auto;"/>
+</div>
 
 This looks familiar, yes? It recalls of an exponent (or line without log-scale x-axis). By calculating [Pearson's](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) and [Spearman's](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient) correlation coefficients, we obtain $$0.90$$ and $$0.69$$, respectively. We also train a linear regression model that predicts revenue from the number of awards and nominations (we do not use log-scale for input) and get $$R^2=0.82$$. Thus, we see a positive (more or less monotonic) linear correlation that support our intuitive finding: hiring winners and nominees should increase the expected revenue.
 
 Now that we understood how awards can affect the career, let's look more on the second factor: revenue.
 
+<div style="text-align: center;">
 <img class="image" width src="assets/images/q2_gender.png" style="width: 500px; height: auto;"/>
+</div>
 
 We see that there is no linear or monotonic correlation (Pearson's and Spearman's correlation are equal to $0.12$ and $0.13$, respectively), however, the biggest (revenue-wise) movies seem to have more balanced proportions of male and female actors.
 
+<div style="text-align: center;">
 <img class="image" width src="assets/images/q2_age.png" style="width: 500px; height: auto;"/>
+</div>
 
 Similarly, there is no indication of linearity or monotonicity, however, the communities with an average age between 30 and 40 tend to have higher revenue.
 
 But **what about the most successful (revenue-wise) cluster?** We take the community with the highest median revenue (we found median to be more representative than mean).
 
+<div style="text-align: center;">
 <img class="image" width src="assets/images/q2_top_gender.png" style="width: 500px; height: auto;"/>
+</div>
 
 This group of actors has about the same gender proportions as the whole industry. In terms of age, this cluster is slightly younger than the rest of the industry:
 
+<div style="text-align: center;">
 <img class="image" width src="assets/images/q2_top_age.png" style="width: 500px; height: auto;"/>
+</div>
 
 "Drama", "Thriller", "Comedy", "Action" and "Adventure" are the prefered genres in this actor group, as we can see from the bar-plot below.
 
+<div style="text-align: center;">
 <img class="image" width src="assets/images/q2_top_genre.png" style="width: 600px; height: auto;"/>
+</div>
 
 But **what actors actually contribute the most?** While this can be interpreted as finding an actor with the highest total revenue or the most awards, we look at it in the more social way. That is, we aim to find an actor that community relies on, that actually makes this community connected. Let's assign a level of "importance" for each actor depending on the connectivity property. We combine [Katz](https://en.wikipedia.org/wiki/Katz_centrality), [Closeness](https://en.wikipedia.org/wiki/Closeness_centrality), and [Betweenness](https://en.wikipedia.org/wiki/Betweenness_centrality) centrality metrics to get an overall impact of each actor. This results in a graph with weighted nodes, depicted below. The bigger the node, the more important it is.
 
