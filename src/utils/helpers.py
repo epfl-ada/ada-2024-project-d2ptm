@@ -51,9 +51,9 @@ def write_communities(G, communities, fname):
 def read_communities(G, fname):
     out_json = read_json(fname)
     assert out_json["movies_filter_metadata"] == G.graph["filter_metadata"]["movies_filter_metadata"], \
-        f"Expected {out_json["movies_filter_metadata"]}, got {G.graph["filter_metadata"]["movies_filter_metadata"]}"
+        f"Expected {out_json['movies_filter_metadata']}, got {G.graph['filter_metadata']['movies_filter_metadata']}"
     assert out_json["characters_filter_metadata"] == G.graph["filter_metadata"]["characters_filter_metadata"], \
-        f"Expected {out_json["characters_filter_metadata"]}, got {G.graph["filter_metadata"]["characters_filter_metadata"]}"
+        f"Expected {out_json['characters_filter_metadata']}, got {G.graph['filter_metadata']['characters_filter_metadata']}"
     return out_json["data"]
 
 
