@@ -29,7 +29,7 @@ def download_data(force_download=False):
 def load_awards():
     """
     Load the movie awards dataset.
-    Assumes the awards data contains 'FreebaseMovieId', 'Awards', and 'Nominations' columns.
+    Assumes the awards data contains 'FreebaseActorId' and 'Awards' columns.
 
     Args:
     - file_path (str): Path to the awards dataset.
@@ -37,13 +37,16 @@ def load_awards():
     Returns:
     - DataFrame: Pandas DataFrame containing the awards data.
     """
-    awards = pd.read_csv(AWARD_PATH / "awards_actors.tsv", sep="\t")
+    awards = pd.read_csv(AWARD_PATH / "awards_actors.tsv", sep="\t",
+                         index_col=0)
+    awards.columns = ["FreebaseActorId", "Awards"]
     return awards
 
 
 def load_nominations():
     """
-    Load the movie nominations dataset, assuming it has columns: 'freebase_ids' and 'nominations' (comma-separated nominations).
+    Load the movie nominations dataset.
+    Assumes the nominations data contains 'FreebaseActorId' and 'Nominations' columns.
 
     Args:
     - file_path (str): Path to the nominations dataset.
@@ -51,7 +54,8 @@ def load_nominations():
     Returns:S
     - DataFrame: Pandas DataFrame containing the nominations data.
     """
-    nominations = pd.read_csv(AWARD_PATH / "nominations_actors.tsv", sep="\t")
+    nominations = pd.read_csv(AWARD_PATH / "nominations_actors.tsv", sep="\t", index_col=0)
+    nominations.columns = ["FreebaseActorId", "Nominations"]
     return nominations
 
 

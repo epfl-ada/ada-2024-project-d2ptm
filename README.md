@@ -131,7 +131,7 @@ Each member will focus on answering one of the above research questions:
 
 Follow these steps for the installation:
 
-0. (Optional) Create and activate new environment using [`conda`](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html) or `venv` ([`+pyenv`](https://github.com/pyenv/pyenv)).
+0. (Optional) Create and activate new environment using [`conda`](https://conda.io/projects/conda/en/latest/user-guide/getting-started.html) or `venv` ([`+pyenv`](https://github.com/pyenv/pyenv)). Python should be `3.10+`.
 
    a. `conda` version:
 

@@ -98,6 +98,10 @@ def filter_by_genre(df, genre):
     df = df.drop(columns=["CorrectGenre"])
     return df
 
+def get_total_awards_or_nominations(actor_awards, total_type="awards"):
+    return actor_awards[total_type].apply(lambda x:
+                    len(x.split(',')) if isinstance(x, str) else 0)
+
 @add_filter_metadata
 def drop_nans_subset(df, subset):
     return df.dropna(subset=subset).copy()
