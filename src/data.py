@@ -5,6 +5,15 @@ from pathlib import Path
 import pandas as pd
 import wget
 
+from src.utils.helpers import (
+    filter_by_country, 
+    drop_nans, 
+    fix_date, 
+    merge_movies_and_actors,
+    filter_by_language,
+    create_graph_from_data
+)
+
 URL = {
     "dataset": "http://www.cs.cmu.edu/~ark/personas/data/MovieSummaries.tar.gz",
     "readme": "http://www.cs.cmu.edu/~ark/personas/data/README.txt",
@@ -119,3 +128,25 @@ def load_characters():
         ],
     )
     return characters
+
+
+def load_common_data():
+    movies = load_movies()
+    characters = load_characters()
+
+    us_movies = filter_by_country(movies, country="United States of America")
+    print("Number of US movies:", us_movies.shape[0])
+
+    us_movies = drop_nans(us_movies, column="Revenue")
+    us_movies = drop_nans(us_movies, column="ReleaseDate")
+    us_movies = fix_date(us_movies, column="ReleaseDate")
+    print("Number of US movies after dropping Nans:", us_movies.shape[0])
+    us_movies = filter_by_language(us_movies, language="English Language")
+
+    characters = drop_nans(characters, column="FreebaseActorId")
+
+    us_characters_movies = merge_movies_and_actors(us_movies, characters)
+
+    G_US = create_graph_from_data(us_characters_movies)
+
+    return us_movies, characters, us_characters_movies, G_US

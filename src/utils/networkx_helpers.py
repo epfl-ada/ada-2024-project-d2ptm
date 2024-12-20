@@ -2,7 +2,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 
-def katz_centrality(G):
+def katz_centrality(G, verbose=True):
     """
     Computes the Katz centrality for all nodes in the graph and assigns the computed 
     values as node attributes. Also prints the top 5 nodes with the highest Katz centrality.
@@ -34,12 +34,13 @@ def katz_centrality(G):
     katz = nx.katz_centrality(G, alpha=alpha)
     nx.set_node_attributes(G, katz, 'katz')
     sorted_katz = sorted(katz.items(), key=lambda x: x[1], reverse=True)
-    for actor, katzc in sorted_katz[:5]:
-        print(G.nodes[actor]['Name'], 'has katz-centrality: %.3f' %katzc)
+    if verbose:
+        for actor, katzc in sorted_katz[:5]:
+            print(G.nodes[actor]['Name'], 'has katz-centrality: %.3f' %katzc)
     return katz
 
 
-def closeness_centrality(G):
+def closeness_centrality(G, verbose=True):
     """
     Computes the closeness centrality for all nodes in the graph and assigns the computed 
     values as node attributes. Also prints the top 5 nodes with the highest closeness centrality.
@@ -67,11 +68,12 @@ def closeness_centrality(G):
     closeness = nx.closeness_centrality(G) 
     nx.set_node_attributes(G, closeness, 'closeness')
     sorted_closeness = sorted(closeness.items(), key=lambda x: x[1], reverse=True)
-    for actor, closec in sorted_closeness[:5]:
-        print(G.nodes[actor]['Name'], 'has closeness-centrality: %.3f' %closec)
+    if verbose:
+        for actor, closec in sorted_closeness[:5]:
+            print(G.nodes[actor]['Name'], 'has closeness-centrality: %.3f' %closec)
     return closeness
 
-def betweenness_centrality(G):
+def betweenness_centrality(G, verbose=True):
     """
     Computes the betweenness centrality for all nodes in the graph and assigns the computed 
     values as node attributes. Also prints the top 5 nodes with the highest betweenness centrality.
@@ -99,8 +101,9 @@ def betweenness_centrality(G):
     bet_centrality = nx.betweenness_centrality(G, normalized = True, endpoints = False) 
     nx.set_node_attributes(G, bet_centrality, 'betweenness')
     sorted_betweenness = sorted(bet_centrality.items(), key=lambda x: x[1], reverse=True)
-    for actor, betc in sorted_betweenness[:5]:
-        print(G.nodes[actor]['Name'], 'has betweenness-centrality: %.3f' %betc)
+    if verbose:
+        for actor, betc in sorted_betweenness[:5]:
+            print(G.nodes[actor]['Name'], 'has betweenness-centrality: %.3f' %betc)
     return bet_centrality
 
 def importance(G, bet_centrality, closeness, katz):
