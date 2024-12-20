@@ -3,6 +3,18 @@ from src.utils.helpers import filter_by_country, filter_by_genre, drop_nans, fix
 from src.data import load_movies, load_characters
 
 import matplotlib.pyplot as plt
+import numpy as np
+
+
+countries_langue = {
+    'English': ('United States of America', 'English Language'),
+    'French' : ('France', 'French Language'),
+    'German': ('Germany', 'German Language'),
+    'Spanish': ('Spain', 'Spanish Language'),
+    'Chinese': ('Italy', 'Italian Language'),
+    'Japanise': ('Japan', 'Japanese Language'),
+    'Hindi': ('India', 'Hindi Language')  
+}
 
 
 def get_dataset_by_genre(genre):
@@ -42,4 +54,33 @@ def draw_drama_vs_horror_by_revenue(total_drama_num_actors, total_drama_revenues
     plt.xscale("log")
     plt.grid(True)
     plt.legend()
+    plt.show()
+
+
+def get_len_of_language(movies, country, language):
+    countryMovies = filter_by_country(movies, country=country)
+    countryMovies = drop_nans(countryMovies, column="Revenue")
+    countryMovies = filter_by_language(countryMovies, language=language)
+    return len(countryMovies)
+
+
+def draw_movies_for_language(movies):
+    storage = {}
+    for key in countries_langue:
+        country, langue = countries_langue[key]
+        len_of_countries = get_len_of_language(movies, country, langue)
+        storage[key] = len_of_countries
+    names = list(storage)
+    vals = [storage[key] for key in storage]
+    sorted_ind = np.argsort(vals)
+    sorted_vals = [vals[ind] for ind in reversed(sorted_ind)]
+    sorted_names = [names[ind] for ind in reversed(sorted_ind)]
+
+    plt.figure(figsize=(10, 6))
+    plt.bar(sorted_names, sorted_vals, alpha=0.7, color="orange")
+    plt.title("Total number of movies with revenue vs language")
+    plt.xlabel("Languages of the movies")
+    plt.ylabel("Total number of movies with revenue")
+    plt.yscale("log")
+    plt.grid(True)
     plt.show()
