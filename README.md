@@ -16,6 +16,10 @@
   <a href="#project-structure">Project Structure</a>
 </p>
 
+## Datastory
+Available at:
+https://epfl-ada.github.io/ada-2024-project-d2ptm/
+
 ## Abstract
 
 In today’s competitive job market, leveraging professional networks is crucial for securing top-tier positions.
