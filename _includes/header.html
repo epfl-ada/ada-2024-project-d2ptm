@@ -8,7 +8,7 @@
     <div class="main">
       <div class="header__title">
         <div class="header__brand">
-          {%- include svg/logo.svg -%}
+          <img src="{{ site.baseurl }}/assets/favicon-96x96.png" alt="Logo" class="header__logo" style="width: 40px; height: auto; margin-right: 5px;">
           {%- assign _paths_root = site.paths.root | default: site.data.variables.default.paths.root  -%}
           {%- include snippets/get-nav-url.html path=_paths_root -%}
           {%- if site.title -%}
