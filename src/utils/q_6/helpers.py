@@ -1,6 +1,8 @@
 from src.utils.helpers import filter_by_genre
 from src.utils.helpers import filter_by_country, filter_by_genre, drop_nans, fix_date, filter_by_language, merge_movies_and_actors
 from src.data import load_movies, load_characters
+from src.awards.helpers import get_linreg_q3
+
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -45,8 +47,15 @@ def filter_name_by_dict(ds, storage):
 
 def draw_drama_vs_horror_by_revenue(total_drama_num_actors, total_drama_revenues, total_comedie_num_actors, total_comedie_revenues):
     plt.figure(figsize=(10, 6))
-    plt.scatter(total_drama_num_actors, total_drama_revenues, alpha=0.7, marker='o', label='drama')
-    plt.scatter(total_comedie_num_actors, total_comedie_revenues, alpha=0.7, marker='+', label='horror')
+
+    ax = plt.gca()
+    ax.scatter(total_drama_num_actors, total_drama_revenues, alpha=0.7, marker='o', label='drama')
+    ax.scatter(total_comedie_num_actors, total_comedie_revenues, alpha=0.7, marker='+', label='horror')
+
+
+    # predicted_revenue = get_linreg_q3(total_drama_num_actors, total_drama_revenues)
+    # print(predicted_revenue)
+    # ax.plot(total_drama_num_actors, predicted_revenue, color="orange", label="Linear Regression Line")
 
     plt.title("Total Number of Actors vs. Average Revenue (by Cluster)")
     plt.xlabel("Total Number of Actors")
