@@ -129,7 +129,7 @@ Let's look at the relation between the revenue and awards. How often have you se
 <img class="image" width src="assets/images/q3.png" style="width: 500px; height: auto;"/>
 </div>
 
-This looks familiar, yes? It recalls of an exponent (or line without log-scale x-axis). By calculating [Pearson's](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) and [Spearman's](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient) correlation coefficients, we obtain $$0.90$$ and $$0.69$$, respectively. We also train a linear regression model that predicts revenue from the number of awards and nominations (we do not use log-scale for input) and get $$R^2=0.82$$. Thus, we see a positive (more or less monotonic) linear correlation that support our intuitive finding: hiring winners and nominees should increase the expected revenue.
+This looks familiar, yes? It reminds of an exponent (or line without log-scale x-axis). By calculating [Pearson's](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) and [Spearman's](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient) correlation coefficients, we obtain $$0.90$$ and $$0.69$$, respectively. We also train a linear regression model that predicts revenue from the number of awards and nominations (we do not use log-scale for input) and get $$R^2=0.82$$. Thus, we see a positive (more or less monotonic) linear correlation that support our intuitive finding: hiring winners and nominees should increase the expected revenue.
 
 Now that we understood how awards can affect the career, let's look more on the second factor: revenue.
 
