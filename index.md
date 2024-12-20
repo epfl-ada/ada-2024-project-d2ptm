@@ -186,13 +186,13 @@ Another interesting question could be: _"How the clusters evolve in time?"_, mea
 
 ## How generalizable is the approach?
 
-While we were able to analyze the communities for the USA movies, there is still a question of generalization of the approach for other data. Hence, we tried to split our data by genre and investigate how different the findings would be. The average revenue obtained for each community versus the number of people in it is provided below for two genres (drama and horror):
+While we were able to analyze the communities for the USA movies, there is still a question of generalization of the approach for other data. Hence, we tried to split our data by genre and investigate how different the findings would be. The average revenue obtained for each community versus the number of people in it is provided below for two genres (drama and comedy):
 
 <div style="text-align: center;">
 <img class="image" width src="assets/images/q6_genre.jpg" style="width: 600px; height: auto;"/>
 </div>
 
-For each genre, instead of applying clustering on the full dataset, we took the genre subset and obtained communities only on it. Even though the drama and horror genres are completely different from the movie's perspective, the similarity between the dots positions on the plot indicates that our findings are not heavily dependent on the genre.
+For each genre, instead of applying clustering on the full dataset, we took the genre subset and obtained communities only on it. Even though the drama and comedy genres are completely different from the movie's perspective, the similarity between the dots positions and fitted linear regressions on the plot indicates that our findings are not heavily dependent on the genre.
 
 We also wanted to investigate the generalization of our findings on the non-US movies. However, the CMU dataset suffers from the absence of metadata for other countries, as you can see from the plot below. Here, we look at a language, not at a country, to provide a more general view on the problem (countries have even less movies than the number of movies for the language in this country). The revenue feature is vital for our analysis and having only around $$100$$ movies is not enough to have faithful conclusions.
 
