@@ -8,7 +8,11 @@ article_header:
   type: overlay
   theme: dark
   background_color: "#123"
-  background_image: false
+  background_image:
+    gradient: "linear-gradient(135deg, rgba(34, 139, 87 , .4), rgba(139, 34, 139, .4))"
+    src: /assets/images/main_page_logo.png
+mathjax: true
+chart: true
 ---
 
 In today’s competitive job market, leveraging professional networks is crucial for securing top-tier positions. But does the same apply to movie actors, where education might not play such a significant role? To explore this, we examine whether an actor’s professional community shapes their success. We build a graph where vertices represent actors, and edges connect those who have appeared in a movie together, **symbolizing a "friendship" between them**. By clustering actors into communities, we investigate the role of friendships in shaping career trajectories. Our analysis focuses on the U.S. movies but extends to films from other countries to determine if the conclusions are universal. This study aims to reveal whether an actor’s community significantly impacts their career outcomes and how friendship patterns vary across time and countries.
@@ -23,46 +27,125 @@ The traditional career path of an actor can be different in different countries.
 
 Before going into actors' analysis, let's look how our data is distributed.
 
-ADD PLOTS About movies.
+<img class="image" width src="assets/images/us_movies_decade.png" style="width: 500px; height: auto;"/>
+
+We see that most of the included movies were produced in 2000 and 80-90s. While such uneven distribution is usually considered harmful for the analysis, we believe it is still meaningful here. Indeed, the cinematography industry is developing and more and more movies are being produced. The sudden drop in 2010s is due to the date of dataset creation, i.e., 2013.
+
+<img class="image" width src="assets/images/us_movies_revenue.png" style="width: 500px; height: auto;"/>
+
+The revenue (in $$ \$ $$) can vary, but it is centered around $$ \sim 10M $$ \$ $$.
+
+<img class="image" width src="assets/images/us_movies_genres.png" style="width: 500px; height: auto;"/>
+
+Many genres are represented in the dataset with Drama and Comedy being the most often ones.
+
+We can also connect movie information with the actors that played it. Such analysis will be the core of following sections. For example, we can look at the famous Harrison Ford:
+
+<div class="card">
+  <div class="card__image">
+    <img class="image" src="assets/images/indiana_jones.jpg" style="width: 500px; height: auto;"/>
+  </div>
+  <div class="card__content">
+    <div class="card__header">
+      <h4>Played in 35 movies.
+      <ul>
+         <li> Favourite genre: Drama (23 movies). </li>
+         <li> Total movie revenues:    6,397,871,819$. </li>
+         <li> Average movie revenue:     182,796,338$. </li>
+      </ul>
+      </h4>
+    </div>
+  </div>
+</div>
+
+We can also look at the general distributions, like a pie chart for the actors' gender:
+
+```chart
+{
+  "type": "pie",
+  "data": {
+    "datasets": [
+      {
+        "data": [35.8, 64.2],
+        "backgroundColor": [
+          "#FF6384",
+          "#36A2EB"
+        ],
+        "label": "Gender"
+      }
+    ],
+    "labels": [
+      "Female",
+      "Male"
+    ]
+  },
+  "options": {}
+}
+```
 
 # Creating a Graph
 
 Now that we have a full view on our data, we can connect it with the information about the actors. We want to investigate the impact of actors' connections and community on their career. How can we create a computational model for that?
 
-Let's say that two actors are "friends" if they have a mutual movie. Then, we obtain a classical interpretation of a graph data and can use it as our computational model: vertices are defined by unique actor names and edges connect actors if they are friends (i.e., participated in the same movie).
+Let's say that two actors are "friends" if they have a mutual movie. Hence, we obtain a classical interpretation of a graph data and can use it as our computational model: vertices are defined by unique actor names and edges connect actors if they are friends (i.e., participated in the same movie).
 
-TODO
+By utilizing [Louvain algorithm](https://arxiv.org/pdf/0803.0476) for clustering graph data, we split our vertices into 133 different communities.
 
-## How can we ensure that our clustering is meaningful?
-
-TODO add about verification
+ADD GRAPH Picture
 
 # Research Questions
 
-## TODO
+## Revenue and Actors' Awards/Nominations
 
-The topic of our research is: **does actor's friendships have and impact on his or her career?**
+How one could measure the success of an actor? We believe there are two ways to do so:
 
-We will focus on the movies created in the USA.
+1. Great actors receive great awards, such as [Oscars](https://www.oscars.org/) or [Golden Globes](https://goldenglobes.com/).
+2. Great actors lead to movie success and successive high revenue.
 
-To answer this question, we investigate the following sub-questions:
+The awards data is not presented in the CMU dataset, therefore we take it from [Wikidata](https://www.wikidata.org/) via our [SPARQL scrapping algorithm](https://github.com/epfl-ada/ada-2024-project-d2ptm/blob/main/scrape_awards.py) and actors' FreebaseID from the CMU movie dataset. We scrape both the awards and the nominations. We focus on the USA-related awards.
 
-1. **Awards.** What are the chances that an actor gets an award?
-   - Are awarded actors usually together in the same cluster? This means that either a cluster has many actors with awards or none.
-2. **Revenue.** What is the influence of a community on the movie revenue?
-   - _Deep Analysis of the top cluster_. What are the groups with the most financial success (e.g. highest average revenue / highest total revenue) and what are their characteristics?
-   - _Cluster comparison analysis_. Do certain types of actor clusters (e.g., clusters featuring actors from diverse genres etc.) correlate with higher or lower revenues?
-3. **Total Success.** Are the groups with the most awards (or nominations) also the groups with the highest revenue?
+For humans, it is usual that their community and surrounding matters a lot on their life-path. But does it hold true for the actor's career? Let's leverage awards data and calculate the proportion of actors with awards or nominations in each community:
 
-4. **Central Nodes.** Are there key actors (central nodes) whose presence significantly impacts the connectivity and composition of clusters?
+<img class="image" width src="assets/images/q1.png" style="width: 700px; height: auto;"/>
 
-5. **Time.** How do clusters evolve over time?
-   - From which to which year has the cluster existed? Are clusters “compact” in time?
-   - Do the characteristics of the leading actor group evolve over time?
+Note that for the very small (in terms of number of actors) clusters the density can vary from $$0$$ to $$1$$ a lot. Given that we have 30378 vertices in our graph, these clusters with less than $$20$$ actors are not very representative. However, if we look at the communities with more than $$20$$ people, we see a linear correlation (linear for log-scale x-axis) between the density and cluster size. To support this idea we trained a linear regression model on log-scale cluster sizes as input. The depicted orange line represents the models' predictions which result in $$0.19 R^2$$ score and positive slope. This indicates that, indeed, the number of awards within the community rises as the community grows. But how the number of awards can increase as the community gets new members? There are only two ways:
 
-While answering these questions provides a comprehensive analysis for the American movies, we want to understand how likely the same conclusions will hold for other countries.
-Therefore, we will compare the clusters from the USA with the clusters from another country, e.g. India:
+1. Actors that have already been in the community got an award. This indicates that being in a community with other nominees\winners may increase your chances of getting nomination\award yourself.
+2. New actors that joined a community already had an award. This means that nominated actors tend to play together with other successful actors.
 
-6. **Country-wise comparison**
-   - Do the clusters have a significant distribution difference between these two countries (e.g., tend to be much smaller/bigger in size)?
-   - What are the differences between top-one (revenue-wise) cluster for these countries in terms of distributions (age, genres, etc.)?
+The box plot on the right also suggests that for non-anomalous clusters (with more than $20$ people, referred to as "filtered clusters") the expected proportion of awarded actors is around $$10\%$$ indicating high chances for actors to actually get an award or nomination.
+
+Let's look at the relation between the revenue and awards. How often have you seen movie trailers advertising themselves via showing that their actors have cool awards, such as Oscars? We guess, a lot. Awards and nominations are not given for nothing. They highlight the skills and experience of an actor. People want to have trust in the movie because they pay for it. The well-known and awarded actors improve this factor and can attract more visitor to the cinemas. Let's verify this intuitive claim using our data:
+
+<img class="image" width src="assets/images/q3.png" style="width: 500px; height: auto;"/>
+
+This looks familiar, yes? It recalls of an exponent (or line without log-scale x-axis). By calculating [Pearson's](https://en.wikipedia.org/wiki/Pearson_correlation_coefficient) and [Spearman's](https://en.wikipedia.org/wiki/Spearman%27s_rank_correlation_coefficient) correlation coefficients, we obtain $$0.90$$ and $$0.69$$, respectively. We also train a linear regression model that predicts revenue from the number of awards and nominations (we do not use log-scale for input) and get $$R^2=0.82$$. Thus, we see a positive (more or less monotonic) linear correlation that support our intuitive finding: hiring winners and nominees should increase the expected revenue.
+
+Now that we understood how awards can affect the career, let's look more on the second factor: revenue.
+
+<img class="image" width src="assets/images/q2_gender.png" style="width: 500px; height: auto;"/>
+
+We see that there is no linear or monotonic correlation (Pearson's and Spearman's correlation are equal to $0.12$ and $0.13$, respectively), however, the biggest (revenue-wise) movies seem to have more balanced proportions of male and female actors.
+
+<img class="image" width src="assets/images/q2_age.png" style="width: 500px; height: auto;"/>
+
+Similarly, there is no indication of linearity or monotonicity, however, the communities with an average age between 30 and 40 tend to have higher revenue.
+
+But what about the most successful (revenue-wise) cluster? We take the community with the highest median revenue (we found median to be more representative than mean).
+
+<img class="image" width src="assets/images/q2_top_gender.png" style="width: 500px; height: auto;"/>
+
+This group of actors has about the same gender proportions as the whole industry. In terms of age, this cluster is slightly younger than the rest of the industry:
+
+<img class="image" width src="assets/images/q2_top_age.png" style="width: 500px; height: auto;"/>
+
+"Drama", "Thriller", "Comedy", "Action" and "Adventure" are the prefered genres in this actor group, as we can see from the bar-plot below.
+
+<img class="image" width src="assets/images/q2_top_genre.png" style="width: 600px; height: auto;"/>
+
+But what actors actually contribute the most? While this can be interpreted as finding an actor with the highest total revenue or the most awards, we look at it in the more social way. That is, we aim to find an actor that community relies on, that actually makes this community connected. Let's assign a level of "importance" for each actor depending on the connectivity property. We combine [Katz](https://en.wikipedia.org/wiki/Katz_centrality), [Closeness](https://en.wikipedia.org/wiki/Closeness_centrality), and [Betweenness](https://en.wikipedia.org/wiki/Betweenness_centrality) centrality metrics to get an overall impact of each actor. This results in a graph with weighted nodes, depicted below. The bigger the node, the more important it is.
+
+<iframe src="assets/images/smaller_graph.html" width="100%" height="500px" frameborder="0">
+   <!-- Fallback content for browsers that do not support iframe -->
+   Your browser does not support iframes.
+</iframe>
