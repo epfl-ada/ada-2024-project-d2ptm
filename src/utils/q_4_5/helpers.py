@@ -142,9 +142,7 @@ def print_cluster_actor_info(G, characters, movies, cluster):
     G_cluster = G.subgraph(cluster.actor_ids)
     actor_stats = ActorStats(characters, movies)
 
-    nx.set_node_attributes(G_cluster, 
-                        dict([(actor_id, actor_stats.actor_name(actor_id)) for actor_id in G_cluster.nodes()]),
-                        'Name')
+    nx.set_node_attributes(G_cluster, dict([(actor_id, actor_stats.actor_name(actor_id)) for actor_id in G_cluster.nodes()]), 'Name')
     katz = katz_centrality(G_cluster, verbose=False)
     betweennness = betweenness_centrality(G_cluster, verbose=False)
     closeness = closeness_centrality(G_cluster, verbose=False)
@@ -154,3 +152,12 @@ def print_cluster_actor_info(G, characters, movies, cluster):
 
 def get_top_movies_by_revenue(cluster, num_actors_in_movie):
     return cluster.cluster_movies(select_type="half", num_actors_in_movie=num_actors_in_movie).sort_values(by="Revenue", ascending=False)["MovieName"].head(10)
+
+
+def make_cluster_years_list(graph_stats, size_l, select_type, num_actors_in_movie=None):
+    cluster_years_list = []
+    for cluster in graph_stats.clusters:
+        cluster_years = cluster.cluster_movies(select_type=select_type, num_actors_in_movie=num_actors_in_movie)["ReleaseDate"].apply(lambda x: int(x.year))
+        if len(cluster_years) >= size_l:
+            cluster_years_list.append(cluster_years)
+    return cluster_years_list
