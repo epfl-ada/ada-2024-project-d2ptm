@@ -184,15 +184,15 @@ We get that most of the clusters have high density and average around 2000. So, 
 
 Another interesting question could be: _"How the clusters evolve in time?"_, meaning that the community may change somehow after the addition or removal of movies with a certain release year. However, the box-plot above indicates that our clustering is not very dependant on time.
 
-# Conclusion
+## How generalizable is the approach?
 
-In this project, we explored the relation between actor's career and the communities they create. Our findings suggest that the awarded actors tend to connect (participate in the same movie) with each other and that an actor is more likely to win (or be nominated for) an award if it is "connected" with other winners/nominees.
+While we were able to analyze the communities for the USA movies, there is still a question of generalization of the approach for other data. Hence, we tried to split our data by genre and investigate how different the findings would be. The average revenue obtained for each community versus the number of people in it is provided below for two genres (drama and horror):
 
-Our analysis showed that there is indeed a correlation between the movie revenue and awards, proving the well-known marketing movie strategy. We also calculated some statistics that indicate the distribution of features for the actors in the communities. This investigation highlights that actor's gender is not that important to participate in top-revenue movies, whereas the age can be a remarkable restriction.
+<div style="text-align: center;">
+<img class="image" width src="assets/images/q6_genre.jpg" style="width: 600px; height: auto;"/>
+</div>
 
-We also saw that the most successful actors prefer the most popular genres in the industry.
-
-## Future work
+For each genre, instead of applying clustering on the full dataset, we took the genre subset and obtained communities only on it. Even though the drama and horror genres are completely different from the movie's perspective, the similarity between the dots positions on the plot indicates that our findings are not heavily dependent on the genre.
 
 We also wanted to investigate the generalization of our findings on the non-US movies. However, the CMU dataset suffers from the absence of metadata for other countries, as you can see from the plot below. Here, we look at a language, not at a country, to provide a more general view on the problem (countries have even less movies than the number of movies for the language in this country). The revenue feature is vital for our analysis and having only around $$100$$ movies is not enough to have faithful conclusions.
 
@@ -201,3 +201,11 @@ We also wanted to investigate the generalization of our findings on the non-US m
 </div>
 
 The future work will focus on supplementing the dataset with more revenue information and comparing the communities between countries.
+
+# Conclusion
+
+In this project, we explored the relation between actor's career and the communities they create. Our findings suggest that the awarded actors tend to connect (participate in the same movie) with each other and that an actor is more likely to win (or be nominated for) an award if it is "connected" with other winners/nominees.
+
+Our analysis showed that there is indeed a correlation between the movie revenue and awards, proving the well-known marketing movie strategy. We also calculated some statistics that indicate the distribution of features for the actors in the communities. This investigation highlights that actor's gender is not that important to participate in top-revenue movies, whereas the age can be a remarkable restriction.
+
+We also saw that the most successful actors prefer the most popular genres in the industry.
