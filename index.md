@@ -97,9 +97,7 @@ Now that we have a full view on our data, we can connect it with the information
 
 Let's say that two actors are "friends" if they have a mutual movie. Hence, we obtain a classical interpretation of a graph data and can use it as our computational model: vertices are defined by unique actor names and edges connect actors if they are friends (i.e., participated in the same movie).
 
-By utilizing [Louvain algorithm](https://arxiv.org/pdf/0803.0476) for clustering graph data, we split our vertices into 133 different communities.
-
-ADD GRAPH Picture
+By utilizing [Louvain algorithm](https://arxiv.org/pdf/0803.0476) for clustering graph data, we split our vertices into 133 different communities. For each actor, we know the movies this actor participated in. Therefore, we can even calculate movie-wise statistics for our communities! We just take all the movies the cluster's actors participated at and calculate total/average value.
 
 # Research Questions
 
@@ -171,3 +169,23 @@ But **what actors actually contribute the most?** While this can be interpreted 
    <!-- Fallback content for browsers that do not support iframe -->
    Your browser does not support iframes.
 </iframe>
+
+## The impact of time
+
+At the beginning, we saw that our dataset has uneven distribution of movies in terms of release year. One may argue that this could be harmful for our analysis and bias the results. For example, it is normal for 00s movie to get hundreds of millions of dollars, while such numbers were hard to get in the 50s. But **how does our clustering algorithm split the data time-wise?**. Let's look at the distribution of release years for the communities. To provide a clear idea without anomalies, we will focus only on the clusters with at least 50 movies (i.e., actors in this cluster participated in at least 50 movies at total).
+
+<div style="text-align: center;">
+<img class="image" width src="assets/images/q5.png" style="width: 600px; height: auto;"/>
+</div>
+
+We get that most of the clusters have high density and average around 2000. So, overall, clusters are not spread in time. This means that we are not biased even though the original data distribution was uneven.
+
+Another interesting question could be: _"How the clusters evolve in time?"_, meaning that the community may change somehow after the addition or removal of movies with a certain release year. However, the box-plot above indicates that our clustering is not very dependant on time.
+
+# Conclusion
+
+We also wanted to investigate the generalization of our findings on the non-US movies. However, the CMU dataset suffers from the absence of metadata for other countries, as you can see from the plot below. Here, we look at a language, not at a country, to provide a more general view on the problem (countries have even less movies than the number of movies for the language in this country). The revenue feature is vital for our analysis and having only around $$100$$ movies is not enough to have faithful conclusions.
+
+<div style="text-align: center;">
+<img class="image" width src="assets/images/q6_language.png" style="width: 600px; height: auto;"/>
+</div>
