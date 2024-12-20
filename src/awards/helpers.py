@@ -141,7 +141,7 @@ def compute_cluster_metrics_actors(communities, movies, characters_movies, actor
         total_revenue_in_billions = total_revenue / 1_000_000_000
 
         cluster_metrics[community_id] = {
-            "total_revenue": float(f"{total_revenue_in_billions:.2f}"),
+            "total_revenue": float(f"{total_revenue_in_billions:.5f}"),
             "total_actor_awards": total_actor_awards,
             "num_actors": len(community_members)
         }
@@ -187,6 +187,7 @@ def plot_actors_award_nominations_revenue(communities, movies, characters_movies
     plt.xlabel("Total Actor Awards/Nominations (log scale)")
     plt.ylabel("Total Revenue (in billions)")
     plt.xscale("log")
+    # plt.yscale("log")
     plt.legend()
     plt.grid(True)
     plt.show()
