@@ -49,13 +49,20 @@ def draw_drama_vs_horror_by_revenue(total_drama_num_actors, total_drama_revenues
     plt.figure(figsize=(10, 6))
 
     ax = plt.gca()
-    ax.scatter(total_drama_num_actors, total_drama_revenues, alpha=0.7, marker='o', label='drama')
-    ax.scatter(total_comedie_num_actors, total_comedie_revenues, alpha=0.7, marker='+', label='horror')
+    ax.scatter(total_drama_num_actors, total_drama_revenues, alpha=0.7, marker='o', label='drama', color="orange")
+    ax.scatter(total_comedie_num_actors, total_comedie_revenues, alpha=0.7, marker='+', label='horror', color="blue")
 
 
-    # predicted_revenue = get_linreg_q3(total_drama_num_actors, total_drama_revenues)
-    # print(predicted_revenue)
-    # ax.plot(total_drama_num_actors, predicted_revenue, color="orange", label="Linear Regression Line")
+    predicted_revenue = get_linreg_q3(total_drama_num_actors, total_drama_revenues)
+    sorted_idx = np.argsort(total_drama_num_actors)
+
+    ax.plot(np.array(total_drama_num_actors)[sorted_idx], predicted_revenue[sorted_idx], color="orange", label="Linear Regression Line Drama")
+
+    predicted_revenue = get_linreg_q3(total_comedie_num_actors, total_comedie_revenues)
+    sorted_idx = np.argsort(total_comedie_num_actors)
+
+    ax.plot(np.array(total_comedie_num_actors)[sorted_idx], predicted_revenue[sorted_idx], color="blue", label="Linear Regression Line Comedy")
+
 
     plt.title("Total Number of Actors vs. Average Revenue (by Cluster)")
     plt.xlabel("Total Number of Actors")
