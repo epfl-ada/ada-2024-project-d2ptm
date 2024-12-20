@@ -15,7 +15,7 @@ mathjax: true
 chart: true
 ---
 
-In today’s competitive job market, leveraging professional networks is crucial for securing top-tier positions. But does the same apply to movie actors, where education might not play such a significant role? To explore this, we examine whether an actor’s professional community shapes their success. We build a graph where vertices represent actors, and edges connect those who have appeared in a movie together, **symbolizing a "friendship" between them**. By clustering actors into communities, we investigate the role of friendships in shaping career trajectories. Our analysis focuses on the U.S. movies but extends to films from other countries to determine if the conclusions are universal. This study aims to reveal whether an actor’s community significantly impacts their career outcomes and how friendship patterns vary across time and countries.
+In today’s competitive job market, leveraging professional networks is crucial for securing top-tier positions. But **does the same apply to movie actors, where education might not play such a significant role?** To explore this, we examine whether an actor’s professional community shapes their success. We build a graph where vertices represent actors, and edges connect those who have appeared in a movie together, **symbolizing a "friendship" between them**. By clustering actors into communities, we investigate the role of friendships in shaping career trajectories. Our analysis focuses on the U.S. movies but extends to films from other countries to determine if the conclusions are universal. This study aims to reveal whether an actor’s community significantly impacts their career outcomes and how friendship patterns vary across time and countries.
 
 ---
 
@@ -97,18 +97,18 @@ ADD GRAPH Picture
 
 ## Revenue and Actors' Awards/Nominations
 
-How one could measure the success of an actor? We believe there are two ways to do so:
+_How one could measure the success of an actor?_ We believe there are two ways to do so:
 
 1. Great actors receive great awards, such as [Oscars](https://www.oscars.org/) or [Golden Globes](https://goldenglobes.com/).
 2. Great actors lead to movie success and successive high revenue.
 
 The awards data is not presented in the CMU dataset, therefore we take it from [Wikidata](https://www.wikidata.org/) via our [SPARQL scrapping algorithm](https://github.com/epfl-ada/ada-2024-project-d2ptm/blob/main/scrape_awards.py) and actors' FreebaseID from the CMU movie dataset. We scrape both the awards and the nominations. We focus on the USA-related awards.
 
-For humans, it is usual that their community and surrounding matters a lot on their life-path. But does it hold true for the actor's career? Let's leverage awards data and calculate the proportion of actors with awards or nominations in each community:
+For humans, it is usual that their community and surrounding matters a lot on their life-path. But **does it hold true for the actor's career?** Let's leverage awards data and calculate the proportion of actors with awards or nominations in each community:
 
 <img class="image" width src="assets/images/q1.png" style="width: 700px; height: auto;"/>
 
-Note that for the very small (in terms of number of actors) clusters the density can vary from $$0$$ to $$1$$ a lot. Given that we have 30378 vertices in our graph, these clusters with less than $$20$$ actors are not very representative. However, if we look at the communities with more than $$20$$ people, we see a linear correlation (linear for log-scale x-axis) between the density and cluster size. To support this idea we trained a linear regression model on log-scale cluster sizes as input. The depicted orange line represents the models' predictions which result in $$0.19 R^2$$ score and positive slope. This indicates that, indeed, the number of awards within the community rises as the community grows. But how the number of awards can increase as the community gets new members? There are only two ways:
+Note that for the very small (in terms of number of actors) clusters the density can vary from $$0$$ to $$1$$ a lot. Given that we have 30378 vertices in our graph, these clusters with less than $$20$$ actors are not very representative. However, if we look at the communities with more than $$20$$ people, we see a linear correlation (linear for log-scale x-axis) between the density and cluster size. To support this idea we trained a linear regression model on log-scale cluster sizes as input. The depicted orange line represents the models' predictions which result in $$0.19 R^2$$ score and positive slope. This indicates that, indeed, the number of awards within the community rises as the community grows. But **how the number of awards can increase as the community gets new members?** There are only two ways:
 
 1. Actors that have already been in the community got an award. This indicates that being in a community with other nominees\winners may increase your chances of getting nomination\award yourself.
 2. New actors that joined a community already had an award. This means that nominated actors tend to play together with other successful actors.
@@ -131,7 +131,7 @@ We see that there is no linear or monotonic correlation (Pearson's and Spearman'
 
 Similarly, there is no indication of linearity or monotonicity, however, the communities with an average age between 30 and 40 tend to have higher revenue.
 
-But what about the most successful (revenue-wise) cluster? We take the community with the highest median revenue (we found median to be more representative than mean).
+But **what about the most successful (revenue-wise) cluster?** We take the community with the highest median revenue (we found median to be more representative than mean).
 
 <img class="image" width src="assets/images/q2_top_gender.png" style="width: 500px; height: auto;"/>
 
@@ -143,7 +143,7 @@ This group of actors has about the same gender proportions as the whole industry
 
 <img class="image" width src="assets/images/q2_top_genre.png" style="width: 600px; height: auto;"/>
 
-But what actors actually contribute the most? While this can be interpreted as finding an actor with the highest total revenue or the most awards, we look at it in the more social way. That is, we aim to find an actor that community relies on, that actually makes this community connected. Let's assign a level of "importance" for each actor depending on the connectivity property. We combine [Katz](https://en.wikipedia.org/wiki/Katz_centrality), [Closeness](https://en.wikipedia.org/wiki/Closeness_centrality), and [Betweenness](https://en.wikipedia.org/wiki/Betweenness_centrality) centrality metrics to get an overall impact of each actor. This results in a graph with weighted nodes, depicted below. The bigger the node, the more important it is.
+But **what actors actually contribute the most?** While this can be interpreted as finding an actor with the highest total revenue or the most awards, we look at it in the more social way. That is, we aim to find an actor that community relies on, that actually makes this community connected. Let's assign a level of "importance" for each actor depending on the connectivity property. We combine [Katz](https://en.wikipedia.org/wiki/Katz_centrality), [Closeness](https://en.wikipedia.org/wiki/Closeness_centrality), and [Betweenness](https://en.wikipedia.org/wiki/Betweenness_centrality) centrality metrics to get an overall impact of each actor. This results in a graph with weighted nodes, depicted below. The bigger the node, the more important it is.
 
 <iframe src="assets/images/smaller_graph.html" width="100%" height="500px" frameborder="0">
    <!-- Fallback content for browsers that do not support iframe -->
