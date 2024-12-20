@@ -118,7 +118,7 @@ Each member focused on answering one of the above research questions and finaliz
 - Paul Guillon: Research question 2; graph visualizations
 - Maksim Vasiliev: Research question 6; awards script
 - Daniil Pyatko: Research question 4, 5; merging
-- Petr Grinberg: Data story; editing; merging
+- Petr Grinberg: Data story; code editing; merging
 
 ## References
 
