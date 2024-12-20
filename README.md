@@ -54,9 +54,10 @@ To answer this question, we investigate the following sub-questions:
 While answering these questions provides a comprehensive analysis for the American movies, we want to understand how likely the same conclusions will hold for other countries.
 Therefore, we will compare the clusters from the USA with the clusters from another country, e.g. India:
 
-6. **Country-wise comparison**
+6. **Country-wise and genre-wise comparison**
    - Do the clusters have a significant distribution difference between these two countries (e.g., tend to be much smaller/bigger in size)?
    - What are the differences between top-one (revenue-wise) cluster for these countries in terms of distributions (age, genres, etc.)?
+   - Does the findings change if we focus only on movies with a specific genre?
 
 ## Methods
 
@@ -111,19 +112,13 @@ We also calculate some statistics and provide some assumptions for the verificat
 
 ## Team organization
 
-Each member will focus on answering one of the above research questions:
+Each member focused on answering one of the above research questions and finalizing our project:
 
-- Research question 1: Petr Grinberg
-- Research question 2: Paul Guillon
-- Research question 3, 6: Maksim Vasiliev
-- Research question 4: Daniil Pyatko
-- Research question 5: Tymur Tytarenko
-
-## Proposed timeline
-
-- 15/11 - 29/11: Homework 2
-- 30/11 - 13/12: Answer research questions individually
-- 14/12 - 20/12: Create datastory/website together
+- Tymur Tytarenko: Research question 1, 3
+- Paul Guillon: Research question 2; graph visualizations
+- Maksim Vasiliev: Research question 6; awards script
+- Daniil Pyatko: Research question 4, 5; merging
+- Petr Grinberg: Data story; editing; merging
 
 ## References
 
@@ -195,6 +190,9 @@ The structure of the code is as follows:
 └── src # all the code
     ├── data.py # data loading code
     ├── __init__.py
+    ├── awards
+    │   ├── __init__.py
+    │   ├── helpers.py # extra code for q13 and working with awards
     ├── scripts # scripts
     │   ├── __init__.py
     │   └── scrape_awards.py # script for obtaining the awards dataset
@@ -203,4 +201,7 @@ The structure of the code is as follows:
         ├── graphs.py # utils for cluster stats
         ├── helpers.py # additional helpers for plotting and cleaning
         ├── __init__.py
+        ├── networkx_helpers.py # special code for networkx
+        ├── q_4_5 # extra helpers for q4 and q5
+        └── q6 # extra code for q6
 ```
