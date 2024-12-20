@@ -157,11 +157,13 @@ This group of actors has about the same gender proportions as the whole industry
 <img class="image" width src="assets/images/q2_top_age.png" style="width: 500px; height: auto;"/>
 </div>
 
-"Drama", "Thriller", "Comedy", "Action" and "Adventure" are the prefered genres in this actor group, as we can see from the bar-plot below.
+"Drama", "Thriller", "Comedy", "Action" and "Adventure" are the preferred genres in this actor group, as we can see from the bar-plot below.
 
 <div style="text-align: center;">
 <img class="image" width src="assets/images/q2_top_genre.png" style="width: 600px; height: auto;"/>
 </div>
+
+Note that this plot is aligned with the one we showed for the whole dataset, meaning that the most successful actors tend to play in the most popular genres.
 
 But **what actors actually contribute the most?** While this can be interpreted as finding an actor with the highest total revenue or the most awards, we look at it in the more social way. That is, we aim to find an actor that community relies on, that actually makes this community connected. Let's assign a level of "importance" for each actor depending on the connectivity property. We combine [Katz](https://en.wikipedia.org/wiki/Katz_centrality), [Closeness](https://en.wikipedia.org/wiki/Closeness_centrality), and [Betweenness](https://en.wikipedia.org/wiki/Betweenness_centrality) centrality metrics to get an overall impact of each actor. This results in a graph with weighted nodes, depicted below. The bigger the node, the more important it is.
 
@@ -184,8 +186,18 @@ Another interesting question could be: _"How the clusters evolve in time?"_, mea
 
 # Conclusion
 
+In this project, we explored the relation between actor's career and the communities they create. Our findings suggest that the awarded actors tend to connect (participate in the same movie) with each other and that an actor is more likely to win (or be nominated for) an award if it is "connected" with other winners/nominees.
+
+Our analysis showed that there is indeed a correlation between the movie revenue and awards, proving the well-known marketing movie strategy. We also calculated some statistics that indicate the distribution of features for the actors in the communities. This investigation highlights that actor's gender is not that important to participate in top-revenue movies, whereas the age can be a remarkable restriction.
+
+We also saw that the most successful actors prefer the most popular genres in the industry.
+
+## Future work
+
 We also wanted to investigate the generalization of our findings on the non-US movies. However, the CMU dataset suffers from the absence of metadata for other countries, as you can see from the plot below. Here, we look at a language, not at a country, to provide a more general view on the problem (countries have even less movies than the number of movies for the language in this country). The revenue feature is vital for our analysis and having only around $$100$$ movies is not enough to have faithful conclusions.
 
 <div style="text-align: center;">
-<img class="image" width src="assets/images/q6_language.png" style="width: 600px; height: auto;"/>
+<img class="image" width src="assets/images/q6_language.jpg" style="width: 600px; height: auto;"/>
 </div>
+
+The future work will focus on supplementing the dataset with more revenue information and comparing the communities between countries.
