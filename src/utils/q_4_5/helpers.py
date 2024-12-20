@@ -150,3 +150,7 @@ def print_cluster_actor_info(G, characters, movies, cluster):
     closeness = closeness_centrality(G_cluster, verbose=False)
 
     importance(G_cluster, betweennness, closeness, katz)
+
+
+def get_top_movies_by_revenue(cluster, num_actors_in_movie):
+    return cluster.cluster_movies(select_type="half", num_actors_in_movie=num_actors_in_movie).sort_values(by="Revenue", ascending=False)["MovieName"].head(10)
