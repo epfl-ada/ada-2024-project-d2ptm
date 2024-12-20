@@ -49,8 +49,8 @@ def draw_drama_vs_horror_by_revenue(total_drama_num_actors, total_drama_revenues
     plt.figure(figsize=(10, 6))
 
     ax = plt.gca()
-    ax.scatter(total_drama_num_actors, total_drama_revenues, alpha=0.7, marker='o', label='drama', color="orange")
-    ax.scatter(total_comedie_num_actors, total_comedie_revenues, alpha=0.7, marker='+', label='horror', color="blue")
+    ax.scatter(total_drama_num_actors, total_drama_revenues, alpha=0.7, marker='o', label='Drama', color="orange")
+    ax.scatter(total_comedie_num_actors, total_comedie_revenues, alpha=0.7, marker='+', label='Comedy', color="blue")
 
 
     predicted_revenue = get_linreg_q3(total_drama_num_actors, total_drama_revenues)
